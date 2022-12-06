@@ -26,12 +26,12 @@ public class Puzzle06 extends AbstractPuzzle {
 
     private int firstUniqueWindow(int windowSize) {
         var input = getPuzzleInput();
-        for (var i = 0; i < input.length() - windowSize + 1; i++) {
+        for (var i = 0; i <= input.length() - windowSize; i++) {
             var window = input.substring(i, i + windowSize);
             if (window.chars().distinct().count() == windowSize) {
                 return i + windowSize;
             }
         }
-        throw new IllegalArgumentException("No window of size = " + windowSize + " had unique characters");
+        throw new IllegalArgumentException("No unique window found");
     }
 }
