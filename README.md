@@ -1,4 +1,4 @@
-# Advent of Code 2021 Solutions
+# Advent of Code 2022 Solutions
 
 [![Build Status](https://github.com/akaritakai/AdventOfCode2022/actions/workflows/main.yml/badge.svg)](https://github.com/akaritakai/AdventOfCode2022/actions)
 [![Code Coverage](https://img.shields.io/codecov/c/github/akaritakai/AdventOfCode2022.svg)](https://codecov.io/gh/akaritakai/AdventOfCode2022)
