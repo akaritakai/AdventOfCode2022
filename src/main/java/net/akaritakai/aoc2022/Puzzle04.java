@@ -1,5 +1,6 @@
 package net.akaritakai.aoc2022;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -17,11 +18,10 @@ public class Puzzle04 extends AbstractPuzzle {
         rangePairs = new Range[lines.length][2];
         for (var i = 0; i < lines.length; i++) {
             var matcher = LINE_PATTERN.matcher(lines[i]);
-            if (!matcher.matches()) {
-                throw new IllegalArgumentException("Invalid input: " + lines[i]);
+            if (matcher.find()) {
+                rangePairs[i][0] = new Range(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
+                rangePairs[i][1] = new Range(Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)));
             }
-            rangePairs[i][0] = new Range(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
-            rangePairs[i][1] = new Range(Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)));
         }
     }
 
@@ -32,23 +32,13 @@ public class Puzzle04 extends AbstractPuzzle {
 
     @Override
     public String solvePart1() {
-        var count = 0;
-        for (var rangePair : rangePairs) {
-            if (Range.fullyContains(rangePair[0], rangePair[1])) {
-                count++;
-            }
-        }
+        var count = Arrays.stream(rangePairs).filter(pair -> Range.fullyContains(pair[0], pair[1])).count();
         return String.valueOf(count);
     }
 
     @Override
     public String solvePart2() {
-        var count = 0;
-        for (var rangePair : rangePairs) {
-            if (Range.intersects(rangePair[0], rangePair[1])) {
-                count++;
-            }
-        }
+        var count = Arrays.stream(rangePairs).filter(pair -> Range.intersects(pair[0], pair[1])).count();
         return String.valueOf(count);
     }
 

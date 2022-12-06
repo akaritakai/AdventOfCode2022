@@ -1,5 +1,6 @@
 package net.akaritakai.aoc2022;
 
+import java.util.Arrays;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
@@ -7,12 +8,13 @@ import java.util.regex.Pattern;
  * In Day 5, we are manipulating a number of stacks.
  */
 public class Puzzle05 extends AbstractPuzzle {
-    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
-    private final String[] instructions;
+    private final Instruction[] instructions;
 
     public Puzzle05(String puzzleInput) {
         super(puzzleInput);
-        instructions = puzzleInput.split("\n\n")[1].split("\n");
+        var instructionPart = puzzleInput.split("\n\n")[1];
+        var instructionLines = instructionPart.split("\n");
+        instructions = Arrays.stream(instructionLines).map(Instruction::parse).toArray(Instruction[]::new);
     }
 
     @Override
@@ -24,14 +26,11 @@ public class Puzzle05 extends AbstractPuzzle {
     public String solvePart1() {
         var stacks = parseStacks();
         for (var instruction : instructions) {
-            var matcher = INSTRUCTION_PATTERN.matcher(instruction);
-            if (matcher.find()) {
-                var count = Integer.parseInt(matcher.group(1));
-                var from = Integer.parseInt(matcher.group(2)) - 1;
-                var to = Integer.parseInt(matcher.group(3)) - 1;
-                for (var i = 0; i < count; i++) {
-                    stacks[to].push(stacks[from].pop());
-                }
+            var count = instruction.count;
+            var from = instruction.from;
+            var to = instruction.to;
+            for (var i = 0; i < count; i++) {
+                stacks[to].push(stacks[from].pop());
             }
         }
         return stackTops(stacks);
@@ -41,18 +40,15 @@ public class Puzzle05 extends AbstractPuzzle {
     public String solvePart2() {
         var stacks = parseStacks();
         for (var instruction : instructions) {
-            var matcher = INSTRUCTION_PATTERN.matcher(instruction);
-            if (matcher.find()) {
-                var count = Integer.parseInt(matcher.group(1));
-                var from = Integer.parseInt(matcher.group(2)) - 1;
-                var to = Integer.parseInt(matcher.group(3)) - 1;
-                var buffer = new Character[count];
-                for (var i = 0; i < count; i++) {
-                    buffer[count - i - 1] = stacks[from].pop();
-                }
-                for (var i = 0; i < count; i++) {
-                    stacks[to].push(buffer[i]);
-                }
+            var count = instruction.count;
+            var from = instruction.from;
+            var to = instruction.to;
+            var buffer = new Character[count];
+            for (var i = 0; i < count; i++) {
+                buffer[count - i - 1] = stacks[from].pop();
+            }
+            for (var i = 0; i < count; i++) {
+                stacks[to].push(buffer[i]);
             }
         }
         return stackTops(stacks);
@@ -70,7 +66,8 @@ public class Puzzle05 extends AbstractPuzzle {
 
     private Stack<Character>[] parseStacks() {
         @SuppressWarnings("unchecked") Stack<Character>[] stacks = new Stack[9];
-        var lines = getPuzzleInput().split("\n\n")[0].split("\n");
+        var stackPart = getPuzzleInput().split("\n\n")[0];
+        var lines = stackPart.split("\n");
         for (var i = lines.length - 2; i >= 0; i--) {
             var line = lines[i];
             for (var j = 1; j < line.length(); j += 4) {
@@ -84,5 +81,19 @@ public class Puzzle05 extends AbstractPuzzle {
             }
         }
         return stacks;
+    }
+
+    private record Instruction(int count, int from, int to) {
+        private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
+        private static Instruction parse(String s) {
+            var matcher = INSTRUCTION_PATTERN.matcher(s);
+            if (matcher.find()) {
+                var count = Integer.parseInt(matcher.group(1));
+                var from = Integer.parseInt(matcher.group(2)) - 1;
+                var to = Integer.parseInt(matcher.group(3)) - 1;
+                return new Instruction(count, from, to);
+            }
+            throw new IllegalArgumentException("Invalid instruction: " + s);
+        }
     }
 }

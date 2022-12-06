@@ -20,9 +20,9 @@ public class Puzzle02 extends AbstractPuzzle {
         for (var lines : getPuzzleInput().split("\n")) {
             var opponent = lines.charAt(0) - 'A';
             var me = lines.charAt(2) - 'X';
-            if (me == opponent) score += 3; // Draw
-            else if ((me + 2) % 3 == opponent) score += 6; // Win
-            score += me + 1;
+            if (me == opponent) score += me + 4; // Draw
+            else if ((me + 2) % 3 == opponent) score += me + 7; // Win
+            else score += me + 1; // Loss
         }
         return String.valueOf(score);
     }
@@ -34,9 +34,9 @@ public class Puzzle02 extends AbstractPuzzle {
             var opponent = lines.charAt(0) - 'A';
             var outcome = lines.charAt(2) - 'X';
             switch (outcome) {
-                case 0 -> score += (opponent + 2) % 3 + 1;
-                case 1 -> score += opponent + 4;
-                case 2 -> score += (opponent + 1) % 3 + 7;
+                case 0 -> score += (opponent + 2) % 3 + 1; // Lose
+                case 1 -> score += opponent + 4; // Draw
+                case 2 -> score += (opponent + 1) % 3 + 7; // Win
             }
         }
         return String.valueOf(score);

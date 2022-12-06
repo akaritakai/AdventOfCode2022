@@ -17,10 +17,8 @@ public class Puzzle01 extends AbstractPuzzle {
         var groups = getPuzzleInput().split("\n\n");
         groupSums = new int[groups.length];
         for (var i = 0; i < groups.length; i++) {
-            var group = groups[i];
-            var groupLines = group.split("\n");
-            for (var groupLine : groupLines) {
-                groupSums[i] += Integer.parseInt(groupLine);
+            for (var line : groups[i].split("\n")) {
+                groupSums[i] += Integer.parseInt(line);
             }
         }
     }
@@ -39,13 +37,13 @@ public class Puzzle01 extends AbstractPuzzle {
     @Override
     public String solvePart2() {
         var heap = new PriorityQueue<Integer>(4);
-        for (var groupSum : groupSums) {
-            heap.add(groupSum);
+        for (var sum : groupSums) {
+            heap.add(sum);
             if (heap.size() >= 4) {
                 heap.poll();
             }
         }
-        var maxSum = heap.stream().reduce(Integer::sum).orElseThrow();
-        return String.valueOf(maxSum);
+        var sum = heap.stream().reduce(Integer::sum).orElseThrow();
+        return String.valueOf(sum);
     }
 }
