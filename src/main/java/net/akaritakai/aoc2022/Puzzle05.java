@@ -84,9 +84,9 @@ public class Puzzle05 extends AbstractPuzzle {
     }
 
     private record Instruction(int count, int from, int to) {
-        private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
+        private static final Pattern PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
         private static Instruction parse(String s) {
-            var matcher = INSTRUCTION_PATTERN.matcher(s);
+            var matcher = PATTERN.matcher(s);
             if (matcher.find()) {
                 var count = Integer.parseInt(matcher.group(1));
                 var from = Integer.parseInt(matcher.group(2)) - 1;
