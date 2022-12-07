@@ -26,9 +26,12 @@ public class Puzzle06 extends AbstractPuzzle {
 
     private int firstUniqueWindow(int windowSize) {
         var input = getPuzzleInput();
-        for (var i = 0; i <= input.length() - windowSize; i++) {
-            var window = input.substring(i, i + windowSize);
-            if (window.chars().distinct().count() == windowSize) {
+        for (var i = 0; i < input.length() - windowSize; i++) {
+            var set = 0;
+            for (int j = 0; j < windowSize; j++) {
+                set |= 1 << (input.charAt(i + j) - 'a');
+            }
+            if (Integer.bitCount(set) == windowSize) {
                 return i + windowSize;
             }
         }
