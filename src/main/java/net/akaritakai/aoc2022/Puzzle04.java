@@ -7,22 +7,9 @@ import java.util.regex.Pattern;
  * In Day 4, we are iterating over pairs of ranges and determining how they overlap (fully or partially).
  */
 public class Puzzle04 extends AbstractPuzzle {
-    private static final Pattern LINE_PATTERN = Pattern.compile("^(\\d+)-(\\d+),(\\d+)-(\\d+)$");
-    private final Range[][] rangePairs;
 
     public Puzzle04(String puzzleInput) {
         super(puzzleInput);
-
-        // Parse out the ranges
-        var lines = puzzleInput.split("\n");
-        rangePairs = new Range[lines.length][2];
-        for (var i = 0; i < lines.length; i++) {
-            var matcher = LINE_PATTERN.matcher(lines[i]);
-            if (matcher.find()) {
-                rangePairs[i][0] = new Range(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
-                rangePairs[i][1] = new Range(Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)));
-            }
-        }
     }
 
     @Override
@@ -32,25 +19,39 @@ public class Puzzle04 extends AbstractPuzzle {
 
     @Override
     public String solvePart1() {
-        var count = Arrays.stream(rangePairs).filter(pair -> Range.fullyContains(pair[0], pair[1])).count();
+        var count = Arrays.stream(parseInput()).filter(Puzzle04::fullyContains).count();
         return String.valueOf(count);
     }
 
     @Override
     public String solvePart2() {
-        var count = Arrays.stream(rangePairs).filter(pair -> Range.intersects(pair[0], pair[1])).count();
+        var count = Arrays.stream(parseInput()).filter(Puzzle04::intersects).count();
         return String.valueOf(count);
     }
 
-    private record Range(int low, int high) {
-        private static boolean fullyContains(Range first, Range second) {
-            return (first.low <= second.low && first.high >= second.high)
-                    || (second.low <= first.low && second.high >= first.high);
-        }
+    private static boolean fullyContains(int[] ranges) {
+        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[3]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[1]);
+    }
 
-        private static boolean intersects(Range first, Range second) {
-            return (first.low <= second.low && first.high >= second.low)
-                    || (second.low <= first.low && second.high >= first.low);
-        }
+    private static boolean intersects(int[] ranges) {
+        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[2]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[0]);
+    }
+
+    private static final Pattern LINE_PATTERN = Pattern.compile("^(\\d+)-(\\d+),(\\d+)-(\\d+)$");
+
+    private int[][] parseInput() {
+        return getPuzzleInput().lines()
+                .map(line -> {
+                    var ranges = new int[4];
+                    var matcher = LINE_PATTERN.matcher(line);
+                    if (matcher.find()) {
+                        ranges[0] = Integer.parseInt(matcher.group(1));
+                        ranges[1] = Integer.parseInt(matcher.group(2));
+                        ranges[2] = Integer.parseInt(matcher.group(3));
+                        ranges[3] = Integer.parseInt(matcher.group(4));
+                    }
+                    return ranges;
+                })
+                .toArray(int[][]::new);
     }
 }

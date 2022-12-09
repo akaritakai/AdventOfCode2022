@@ -1,49 +1,15 @@
 package net.akaritakai.aoc2022;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * In Day 7, we have to determine the state of a file system metadata store from a list of queries and answers that were
  * run against it.
  */
 public class Puzzle07 extends AbstractPuzzle {
-    private final Node root = new Node(null);
-
     public Puzzle07(String puzzleInput) {
         super(puzzleInput);
-
-        // Parse the input
-        var node = root;
-        var blocks = getPuzzleInput().split("\\$");
-        for (var block : blocks) {
-            var lines = block.split("\n");
-            var command = lines[0].trim();
-            if (command.equals("cd /")) {
-                node = root;
-            } else if (command.equals("cd ..")) {
-                node = node.parent;
-            } else if (command.startsWith("cd ")) {
-                var name = command.substring(3);
-                final Node n = node;
-                node = node.children.computeIfAbsent(name, k -> new Node(n));
-            } else if (command.equals("ls")) {
-                for (var i = 1; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    if (line.startsWith("dir ")) {
-                        var name = line.substring(4);
-                        final Node n = node;
-                        node.children.computeIfAbsent(name, k -> new Node(n));
-                    } else if (!line.isEmpty()) {
-                        var parts = line.split(" ");
-                        var size = Integer.parseInt(parts[0]);
-                        var name = parts[1];
-                        final Node n = node;
-                        node.children.computeIfAbsent(name, k -> new Node(n, size));
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -52,44 +18,90 @@ public class Puzzle07 extends AbstractPuzzle {
     }
     @Override
     public String solvePart1() {
-        var dirSizes = new HashMap<Node, Integer>();
-        recursiveSize(dirSizes, root);
-        var totalSize = dirSizes.values().stream()
-                .filter(size -> size <= 100_000)
-                .mapToInt(Integer::intValue)
-                .sum();
+        var totalSize = new Input().directorySizes().filter(size -> size <= 100_000).sum();
         return String.valueOf(totalSize);
     }
 
     @Override
     public String solvePart2() {
-        var dirSizes = new HashMap<Node, Integer>();
+        var input = new Input();
 
         var totalSpace = 70_000_000;
-        var usedSpace = recursiveSize(dirSizes, root);
+        var usedSpace = input.rootSize();
         var freeSpace = totalSpace - usedSpace;
         var spaceNeeded = 30_000_000 - freeSpace;
 
-        var dirSize = dirSizes.values().stream()
-                .filter(size -> size >= spaceNeeded)
-                .mapToInt(Integer::intValue)
-                .min()
-                .orElseThrow();
+        var dirSize = input.directorySizes().filter(size -> size >= spaceNeeded).min().orElseThrow();
         return String.valueOf(dirSize);
     }
 
-    private int recursiveSize(Map<Node, Integer> dirMemo, Node node) {
-        if (!node.isDirectory) {
-            return node.size;
+    /** Builds the file system metadata state from the queries and responses. */
+    private final class Input {
+        private final Node root = new Node(null);
+        private final Map<Node, Integer> recursiveSizes = new HashMap<>();
+
+        private Input() {
+            var current = root;
+            Scanner scanner = new Scanner(getPuzzleInput());
+            var buffer = new ArrayList<String>();
+            while (scanner.hasNextLine()) {
+                var line = scanner.nextLine();
+                if (!buffer.isEmpty() && line.startsWith("$")) {
+                    current = processBuffer(buffer, current);
+                    buffer.clear();
+                }
+                buffer.add(line);
+            }
+            processBuffer(buffer, current);
         }
-        if (dirMemo.containsKey(node)) {
-            return dirMemo.get(node);
+
+        private Node processBuffer(List<String> buffer, Node current) {
+            var command = buffer.get(0);
+            if (command.startsWith("$ cd ")) {
+                var path = command.substring(5);
+                return switch (path) {
+                    case "/" -> root;
+                    case ".." -> current.parent;
+                    default -> current.children.computeIfAbsent(path, k -> new Node(current));
+                };
+            } else if (command.equals("$ ls")) {
+                buffer.stream().skip(1).forEach(response -> {
+                    if (response.startsWith("dir ")) {
+                        var path = response.substring(4);
+                        current.children.computeIfAbsent(path, k -> new Node(current));
+                    } else {
+                        var parts = response.split(" ");
+                        var size = Integer.parseInt(parts[0]);
+                        var path = parts[1];
+                        current.children.computeIfAbsent(path, k -> new Node(current, size));
+                    }
+                });
+            }
+            return current;
         }
-        var size = node.children.values().stream()
-                .mapToInt(child -> recursiveSize(dirMemo, child))
-                .sum();
-        dirMemo.put(node, size);
-        return size;
+
+        private int recursiveSize(Node node) {
+            if (!node.isDirectory) {
+                return node.size;
+            }
+            if (recursiveSizes.containsKey(node)) {
+                return recursiveSizes.get(node);
+            }
+            var size = node.children.values().stream().mapToInt(this::recursiveSize).sum();
+            recursiveSizes.put(node, size);
+            return size;
+        }
+
+        private int rootSize() {
+            return recursiveSize(root);
+        }
+
+        private IntStream directorySizes() {
+            if (recursiveSizes.isEmpty()) {
+                recursiveSize(root);
+            }
+            return recursiveSizes.values().stream().mapToInt(i -> i);
+        }
     }
 
     private static final class Node {

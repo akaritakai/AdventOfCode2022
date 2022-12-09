@@ -1,20 +1,15 @@
 package net.akaritakai.aoc2022;
 
-import java.util.Arrays;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * In Day 5, we are manipulating a number of stacks.
+ * In Day 5, we are manipulating a number of stacks and querying their final state.
  */
 public class Puzzle05 extends AbstractPuzzle {
-    private final Instruction[] instructions;
 
     public Puzzle05(String puzzleInput) {
         super(puzzleInput);
-        var instructionPart = puzzleInput.split("\n\n")[1];
-        var instructionLines = instructionPart.split("\n");
-        instructions = Arrays.stream(instructionLines).map(Instruction::parse).toArray(Instruction[]::new);
     }
 
     @Override
@@ -24,13 +19,15 @@ public class Puzzle05 extends AbstractPuzzle {
 
     @Override
     public String solvePart1() {
-        var stacks = parseStacks();
-        for (var instruction : instructions) {
+        var input = new Input();
+        var stacks = input.stacks;
+        for (var instruction : input.instructions) {
             var count = instruction.count;
             var from = instruction.from;
             var to = instruction.to;
             for (var i = 0; i < count; i++) {
-                stacks[to].push(stacks[from].pop());
+                var item = stacks[from].pop();
+                stacks[to].push(item);
             }
         }
         return stackTops(stacks);
@@ -38,12 +35,13 @@ public class Puzzle05 extends AbstractPuzzle {
 
     @Override
     public String solvePart2() {
-        var stacks = parseStacks();
-        for (var instruction : instructions) {
+        var input = new Input();
+        var stacks = input.stacks;
+        for (var instruction : input.instructions) {
             var count = instruction.count;
             var from = instruction.from;
             var to = instruction.to;
-            var buffer = new Character[count];
+            var buffer = new char[count];
             for (var i = 0; i < count; i++) {
                 buffer[count - i - 1] = stacks[from].pop();
             }
@@ -64,36 +62,57 @@ public class Puzzle05 extends AbstractPuzzle {
         return sb.toString();
     }
 
-    private Stack<Character>[] parseStacks() {
-        @SuppressWarnings("unchecked") Stack<Character>[] stacks = new Stack[9];
-        var stackPart = getPuzzleInput().split("\n\n")[0];
-        var lines = stackPart.split("\n");
-        for (var i = lines.length - 2; i >= 0; i--) {
-            var line = lines[i];
-            for (var j = 1; j < line.length(); j += 4) {
-                char c = line.charAt(j);
-                if (c != ' ') {
-                    if (stacks[j / 4] == null) {
-                        stacks[j / 4] = new Stack<>();
+    /** Parses the input, supporting up to 9 stacks. */
+    private final class Input {
+        private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
+
+        @SuppressWarnings("unchecked")
+        private final Stack<Character>[] stacks = new Stack[9];
+        private final List<Instruction> instructions = new ArrayList<>();
+
+        private Input() {
+            var scanner = new Scanner(getPuzzleInput());
+            parseStack(scanner);
+            parseInstructions(scanner);
+        }
+
+        private void parseStack(Scanner scanner) {
+            Stack<String> buffer = new Stack<>();
+            while (scanner.hasNextLine()) {
+                var line = scanner.nextLine();
+                if (line.startsWith(" 1")) {
+                    break; // End of stack data
+                }
+                buffer.push(line);
+
+            }
+            while (!buffer.isEmpty()) {
+                var line = buffer.pop();
+                for (var i = 1; i < line.length(); i += 4) {
+                    char c = line.charAt(i);
+                    if (c != ' ') {
+                        if (stacks[i / 4] == null) {
+                            stacks[i / 4] = new Stack<>();
+                        }
+                        stacks[i / 4].push(c);
                     }
-                    stacks[j / 4].push(c);
                 }
             }
         }
-        return stacks;
+
+        private void parseInstructions(Scanner scanner) {
+            while (scanner.hasNextLine()) {
+                var matcher = INSTRUCTION_PATTERN.matcher(scanner.nextLine());
+                if (matcher.find()) {
+                    var count = Integer.parseInt(matcher.group(1));
+                    var from = Integer.parseInt(matcher.group(2)) - 1;
+                    var to = Integer.parseInt(matcher.group(3)) - 1;
+                    instructions.add(new Instruction(count, from, to));
+                }
+            }
+        }
     }
 
     private record Instruction(int count, int from, int to) {
-        private static final Pattern PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
-        private static Instruction parse(String s) {
-            var matcher = PATTERN.matcher(s);
-            if (matcher.find()) {
-                var count = Integer.parseInt(matcher.group(1));
-                var from = Integer.parseInt(matcher.group(2)) - 1;
-                var to = Integer.parseInt(matcher.group(3)) - 1;
-                return new Instruction(count, from, to);
-            }
-            throw new IllegalArgumentException("Invalid instruction: " + s);
-        }
     }
 }

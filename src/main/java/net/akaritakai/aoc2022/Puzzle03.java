@@ -19,12 +19,13 @@ public class Puzzle03 extends AbstractPuzzle {
 
     @Override
     public String solvePart1() {
-        var sum = 0;
-        for (var rucksack : getPuzzleInput().split("\n")) {
-            var compartment1 = rucksack.substring(0, rucksack.length() / 2);
-            var compartment2 = rucksack.substring(rucksack.length() / 2);
-            sum += findCommonBit(compartment1, compartment2);
-        }
+        var sum = getPuzzleInput().lines()
+                .mapToInt(rucksack -> {
+                    var compartment1 = rucksack.substring(0, rucksack.length() / 2);
+                    var compartment2 = rucksack.substring(rucksack.length() / 2);
+                    return findCommonBit(compartment1, compartment2);
+                })
+                .sum();
         return String.valueOf(sum);
     }
 
@@ -48,10 +49,13 @@ public class Puzzle03 extends AbstractPuzzle {
 
     private static BitSet toBitSet(String s) {
         var bitSet = new BitSet(52);
-        for (char c : s.toCharArray()) {
-            if (c >= 'a' && c <= 'z') bitSet.set(c - 'a');
-            else if (c >= 'A' && c <= 'Z') bitSet.set(c - 'A' + 26);
-        }
+        s.chars().forEach(c -> {
+            if (c >= 'a' && c <= 'z') {
+                bitSet.set(c - 'a');
+            } else if (c >= 'A' && c <= 'Z') {
+                bitSet.set(c - 'A' + 26);
+            }
+        });
         return bitSet;
     }
 }
