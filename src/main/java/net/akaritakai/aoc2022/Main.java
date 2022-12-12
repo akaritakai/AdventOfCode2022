@@ -12,7 +12,11 @@ public class Main {
             new Puzzle05(PUZZLE_INPUT_FETCHER.getPuzzleInput(5)),
             new Puzzle06(PUZZLE_INPUT_FETCHER.getPuzzleInput(6)),
             new Puzzle07(PUZZLE_INPUT_FETCHER.getPuzzleInput(7)),
-            new Puzzle08(PUZZLE_INPUT_FETCHER.getPuzzleInput(8))
+            new Puzzle08(PUZZLE_INPUT_FETCHER.getPuzzleInput(8)),
+            new Puzzle09(PUZZLE_INPUT_FETCHER.getPuzzleInput(9)),
+            new Puzzle10(PUZZLE_INPUT_FETCHER.getPuzzleInput(10)),
+            new Puzzle11(PUZZLE_INPUT_FETCHER.getPuzzleInput(11)),
+            new Puzzle12(PUZZLE_INPUT_FETCHER.getPuzzleInput(12))
     );
 
     public static void main(String[] args) {
