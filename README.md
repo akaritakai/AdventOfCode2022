@@ -2,8 +2,8 @@
 
 [![Build Status](https://github.com/akaritakai/AdventOfCode2022/actions/workflows/main.yml/badge.svg)](https://github.com/akaritakai/AdventOfCode2022/actions)
 [![Code Coverage](https://img.shields.io/codecov/c/github/akaritakai/AdventOfCode2022.svg)](https://codecov.io/gh/akaritakai/AdventOfCode2022)
-![Stars](https://img.shields.io/badge/stars%20⭐-32-yellow)
-![Days Completed](https://img.shields.io/badge/days%20completed-16-green)
+![Stars](https://img.shields.io/badge/stars%20⭐-34-yellow)
+![Days Completed](https://img.shields.io/badge/days%20completed-17-green)
 
 This repo contains my Advent of Code 2022 solutions in Java 17. After providing it with your puzzle inputs (or your
 session token), running the program will print out the answers to all days of the puzzle. A Docker image is provided to 
@@ -48,6 +48,8 @@ Day 15 Part 1: 5299855
 Day 15 Part 2: 13615843289729
 Day 16 Part 1: 1741
 Day 16 Part 2: 2316
+Day 17 Part 1: 3181
+Day 17 Part 2: 1570434782634
 ```
 
 ## Providing Your Puzzle Input
