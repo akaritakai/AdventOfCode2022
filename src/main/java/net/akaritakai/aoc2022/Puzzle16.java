@@ -40,17 +40,17 @@ public class Puzzle16 extends AbstractPuzzle {
     public String solvePart2() {
         var valves = new Valves(26);
         var memo = valves.calculateFlow();
-        int[][] condensedMemo = IntStream.range(0, (1 << valves.numValves))
+        var condensedMemo = IntStream.range(0, (1 << valves.numValves))
                 .filter(i -> memo[i] > 0)
                 .mapToObj(i -> new int[]{i, memo[i]})
                 .sorted((a, b) -> Integer.compare(b[1], a[1]))
                 .toArray(int[][]::new);
         var best = 0;
-        for (int i = 0; i <= condensedMemo.length; i++) {
+        for (var i = 0; i <= condensedMemo.length; i++) {
             if (condensedMemo[i][1] * 2 < best) {
                 break;
             }
-            for (int j = i + 1; j < condensedMemo.length; j++) {
+            for (var j = i + 1; j < condensedMemo.length; j++) {
                 if ((condensedMemo[i][0] & condensedMemo[j][0]) == 0) {
                     best = Math.max(best, condensedMemo[i][1] + condensedMemo[j][1]);
                 }
