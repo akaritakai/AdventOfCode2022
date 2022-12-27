@@ -1,16 +1,9 @@
 package net.akaritakai.aoc2022;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.*;
 
 /**
  * In Day 23, we're simulating a cellular automaton that halts.
- * TODO: This solution needs a speed-up.
  */
 public class Puzzle23 extends AbstractPuzzle {
 
@@ -43,53 +36,55 @@ public class Puzzle23 extends AbstractPuzzle {
     }
 
     private boolean doRound(Set<Point> elves, int round) {
-        Multimap<Point, Point> proposals = MultimapBuilder.hashKeys().arrayListValues().build();
+        Map<Point, List<Point>> proposals = new HashMap<>();
         for (var elf : elves) {
-            var neighbors = Arrays.stream(Direction.values()).map(elf::move).map(elves::contains).toArray(Boolean[]::new);
-            if (Arrays.stream(neighbors).noneMatch(b -> b)) {
+            var hasNeighbors = false;
+            var neighbors = new boolean[8];
+            var i = 0;
+            for (var dx = -1; dx <= 1; dx++) {
+                for (var dy = -1; dy <= 1; dy++) {
+                    if (dx == 0 && dy == 0) continue;
+                    boolean hasNeighbor = elves.contains(new Point(elf.x + dx, elf.y + dy));
+                    hasNeighbors |= hasNeighbor;
+                    neighbors[i++] = hasNeighbor;
+                }
+            }
+            if (!hasNeighbors) {
                 continue;
             }
-            for (var i = round; i < round + 4; i++) {
+            for (i = round; i < round + 4; i++) {
                 if (i % 4 == 0) {
-                    if (!neighbors[Direction.NORTH.ordinal()]
-                            && !neighbors[Direction.NORTH_EAST.ordinal()]
-                            && !neighbors[Direction.NORTH_WEST.ordinal()]) {
-                        proposals.put(elf.move(Direction.NORTH), elf);
+                    if (!neighbors[0] && !neighbors[3] && !neighbors[5]) {
+                        proposals.computeIfAbsent(new Point(elf.x, elf.y - 1), k -> new ArrayList<>()).add(elf);
                         break;
                     }
                 } else if (i % 4 == 1) {
-                    if (!neighbors[Direction.SOUTH.ordinal()]
-                            && !neighbors[Direction.SOUTH_EAST.ordinal()]
-                            && !neighbors[Direction.SOUTH_WEST.ordinal()]) {
-                        proposals.put(elf.move(Direction.SOUTH), elf);
+                    if (!neighbors[2] && !neighbors[4] && !neighbors[7]) {
+                        proposals.computeIfAbsent(new Point(elf.x, elf.y + 1), k -> new ArrayList<>()).add(elf);
                         break;
                     }
                 } else if (i % 4 == 2) {
-                    if (!neighbors[Direction.WEST.ordinal()]
-                            && !neighbors[Direction.NORTH_WEST.ordinal()]
-                            && !neighbors[Direction.SOUTH_WEST.ordinal()]) {
-                        proposals.put(elf.move(Direction.WEST), elf);
+                    if (!neighbors[0] && !neighbors[1] && !neighbors[2]) {
+                        proposals.computeIfAbsent(new Point(elf.x - 1, elf.y), k -> new ArrayList<>()).add(elf);
                         break;
                     }
                 } else if (i % 4 == 3) {
-                    if (!neighbors[Direction.EAST.ordinal()]
-                            && !neighbors[Direction.NORTH_EAST.ordinal()]
-                            && !neighbors[Direction.SOUTH_EAST.ordinal()]) {
-                        proposals.put(elf.move(Direction.EAST), elf);
+                    if (!neighbors[5] && !neighbors[6] && !neighbors[7]) {
+                        proposals.computeIfAbsent(new Point(elf.x + 1, elf.y), k -> new ArrayList<>()).add(elf);
                         break;
                     }
                 }
             }
         }
-        AtomicBoolean moved = new AtomicBoolean(false);
-        proposals.asMap().forEach((proposal, proposers) -> {
-            if (proposers.size() == 1) {
-                elves.remove(proposers.iterator().next());
-                elves.add(proposal);
-                moved.set(true);
+        boolean moved = false;
+        for (var entry : proposals.entrySet()) {
+            if (entry.getValue().size() == 1) {
+                elves.remove(entry.getValue().get(0));
+                elves.add(entry.getKey());
+                moved = true;
             }
-        });
-        return moved.get();
+        }
+        return moved;
     }
 
     private long countEmpty(Set<Point> elves) {
@@ -113,28 +108,6 @@ public class Puzzle23 extends AbstractPuzzle {
         return points;
     }
 
-    private enum Direction {
-        NORTH(0, -1),
-        NORTH_EAST (1, -1),
-        EAST (1, 0),
-        SOUTH_EAST (1, 1),
-        SOUTH (0, 1),
-        SOUTH_WEST (-1, 1),
-        WEST (-1, 0),
-        NORTH_WEST (-1, -1);
-
-        private final int dx;
-        private final int dy;
-
-        Direction(int dx, int dy) {
-            this.dx = dx;
-            this.dy = dy;
-        }
-    }
-
     private record Point(int x, int y) {
-        private Point move(Direction direction) {
-            return new Point(x + direction.dx, y + direction.dy);
-        }
     }
 }
