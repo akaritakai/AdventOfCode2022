@@ -9,7 +9,9 @@ This repo contains my Advent of Code 2022 solutions in Java 17. After providing 
 session token), running the program will print out the answers to all days of the puzzle. A Docker image is provided to 
 ensure compatibility with machines that do not want to install the Java 17 runtime.
 
-The goal of this repo is to provide fast, highly tested, and easy-to-use solutions.
+The goal of this repo is to provide fast, highly tested, and easy-to-use solutions. When run on my PC (an AMD Ryzen 9
+3950X), all answers are output in ~3.6 seconds. OCR is also automatically performed for Day 10's puzzle to avoid
+requiring interpretation.
 
 This repo may see changes in the future to improve runtime. If you have any suggestions, issues running the code, or
 find a correctness error: please open an issue or pull request.
