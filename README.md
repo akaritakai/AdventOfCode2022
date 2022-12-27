@@ -125,7 +125,6 @@ Day 2's input is at https://adventofcode.com/2022/day/2/input, etc.
 3. Open Terminal and navigate to the project directory.
 4. Run `./gradlew run`
 
-
 ## Linux Instructions
 
 1. Follow the instructions above for providing your puzzle input.
