@@ -22,10 +22,10 @@ public class Puzzle02 extends AbstractPuzzle {
                     var me = line.charAt(2) - 'X';
                     if (me == opponent) {
                         return me + 4; // Draw
-                    } else if ((me + 2) % 3 == opponent) {
-                        return me + 7; // Win
-                    } else {
+                    } else if ((me + 1) % 3 == opponent) {
                         return me + 1; // Loss
+                    } else {
+                        return me + 7; // Win
                     }
                 })
                 .sum();
