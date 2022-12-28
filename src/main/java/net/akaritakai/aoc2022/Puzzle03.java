@@ -1,35 +1,25 @@
 package net.akaritakai.aoc2022;
 
-import java.util.BitSet;
-
 /**
  * In Day 3, we are comparing multiple Strings and finding the single character they have in common. We do this by
- * converting each String to a BitSet representing character inclusion/exclusion and then finding the intersection of
- * all the BitSets.
+ * converting each String to a bit set representing character inclusion/exclusion and then finding the intersection of
+ * all the bit sets.
  */
 public class Puzzle03 extends AbstractPuzzle {
     public Puzzle03(String puzzleInput) {
         super(puzzleInput);
     }
 
-    private static int findCommonBit(String... strings) {
-        var bitSet = toBitSet(strings[0]);
-        for (var i = 1; i < strings.length; i++) {
-            bitSet.and(toBitSet(strings[i]));
-        }
-        return bitSet.nextSetBit(0) + 1;
-    }
-
-    private static BitSet toBitSet(String s) {
-        var bitSet = new BitSet(52);
-        s.chars().forEach(c -> {
+    private static long bitSet(String s) {
+        long set = 0;
+        for (char c : s.toCharArray()) {
             if (c >= 'a' && c <= 'z') {
-                bitSet.set(c - 'a');
+                set |= 1L << (c - 'a');
             } else if (c >= 'A' && c <= 'Z') {
-                bitSet.set(c - 'A' + 26);
+                set |= 1L << (c - 'A' + 26);
             }
-        });
-        return bitSet;
+        }
+        return set;
     }
 
     @Override
@@ -41,9 +31,9 @@ public class Puzzle03 extends AbstractPuzzle {
     public String solvePart1() {
         var sum = getPuzzleInput().lines()
                 .mapToInt(rucksack -> {
-                    var compartment1 = rucksack.substring(0, rucksack.length() / 2);
-                    var compartment2 = rucksack.substring(rucksack.length() / 2);
-                    return findCommonBit(compartment1, compartment2);
+                    var compartment1 = bitSet(rucksack.substring(0, rucksack.length() / 2));
+                    var compartment2 = bitSet(rucksack.substring(rucksack.length() / 2));
+                    return Long.numberOfTrailingZeros(compartment1 & compartment2) + 1;
                 })
                 .sum();
         return String.valueOf(sum);
@@ -54,7 +44,10 @@ public class Puzzle03 extends AbstractPuzzle {
         var sum = 0;
         var rucksacks = getPuzzleInput().split("\n");
         for (var i = 0; i < rucksacks.length; i += 3) {
-            sum += findCommonBit(rucksacks[i], rucksacks[i + 1], rucksacks[i + 2]);
+            var rucksack1 = bitSet(rucksacks[i]);
+            var rucksack2 = bitSet(rucksacks[i + 1]);
+            var rucksack3 = bitSet(rucksacks[i + 2]);
+            sum += Long.numberOfTrailingZeros(rucksack1 & rucksack2 & rucksack3) + 1;
         }
         return String.valueOf(sum);
     }
