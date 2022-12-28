@@ -1,7 +1,6 @@
 package net.akaritakai.aoc2022;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.microsoft.z3.*;
 
 /**
  * In Day 25, we're summing up base 5 numbers where some digits can be negative.
@@ -30,41 +29,24 @@ public class Puzzle25 extends AbstractPuzzle {
 
     @VisibleForTesting
     static String toSnafu(long n) {
-        try (var context = new Context()) {
-            for (var numDigits = 1; true; numDigits++) {
-                var solver = context.mkSolver();
-
-                var digits = new IntExpr[numDigits];
-                for (var i = 0; i < numDigits; i++) {
-                    digits[i] = context.mkIntConst("digit" + i);
-                    solver.add(context.mkAnd(
-                            context.mkGe(digits[i], context.mkInt(-2)),
-                            context.mkLe(digits[i], context.mkInt(2))));
-                }
-
-                ArithExpr<IntSort> total = context.mkInt(0);
-                long base = 1;
-                for (var i = numDigits - 1; i >= 0; i--) {
-                    total = context.mkAdd(total, context.mkMul(digits[i], context.mkInt(base)));
-                    base *= 5;
-                }
-                solver.add(context.mkEq(total, context.mkInt(n)));
-
-                if (solver.check() == Status.SATISFIABLE) {
-                    var sb = new StringBuilder();
-                    for (int i = 0; i < numDigits; i++) {
-                        switch (solver.getModel().eval(digits[i], false).toString()) {
-                            case "-2" -> sb.append("=");
-                            case "-1" -> sb.append("-");
-                            case "0" -> sb.append("0");
-                            case "1" -> sb.append("1");
-                            case "2" -> sb.append("2");
-                        }
-                    }
-                    return sb.toString();
+        int numDigits = 1;
+        while ((Math.pow(5, numDigits) - 1) / 2 < Math.abs(n)) {
+            numDigits++;
+        }
+        var digits = new char[] { '=', '-', '0', '1', '2' };
+        var sb = new StringBuilder();
+        for (; numDigits > 0; numDigits--) {
+            var base = Math.pow(5, numDigits - 1);
+            var min = -((5 * base - 1) / 2);
+            for (int i = 1; i <= 5; i++) {
+                if (n <= min + i * base - 1) {
+                    sb.append(digits[i - 1]);
+                    n += (3 - i) * base;
+                    break;
                 }
             }
         }
+        return sb.toString();
     }
 
     @VisibleForTesting
