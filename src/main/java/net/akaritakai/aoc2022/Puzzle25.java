@@ -37,9 +37,8 @@ public class Puzzle25 extends AbstractPuzzle {
         var sb = new StringBuilder();
         for (; numDigits > 0; numDigits--) {
             var base = Math.pow(5, numDigits - 1);
-            var min = -((5 * base - 1) / 2);
             for (int i = 1; i <= 5; i++) {
-                if (n <= min + i * base - 1) {
+                if (5 * base + 2 * n + 1 <= 2 * base * i) {
                     sb.append(digits[i - 1]);
                     n += (3 - i) * base;
                     break;
