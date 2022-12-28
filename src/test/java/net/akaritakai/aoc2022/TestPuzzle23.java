@@ -1,4 +1,3 @@
-
 package net.akaritakai.aoc2022;
 
 import org.junit.jupiter.api.Test;
@@ -44,5 +43,5 @@ public class TestPuzzle23 extends BasePuzzleTest {
     public void testSolvePart2() throws Exception {
         var puzzle = new Puzzle23(getStoredInput(23));
         assertEquals(puzzle.solvePart2(), "1065");
-   }
+    }
 }

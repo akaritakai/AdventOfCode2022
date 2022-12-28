@@ -16,8 +16,22 @@ import java.util.regex.Pattern;
  */
 public class Puzzle22 extends AbstractPuzzle {
 
+    // Instructions for how to move along the path
+    // Values less than 0 are special: -1 indicates a left turn and -2 indicates a right turn
+    private static final int LEFT_INSTRUCTION = -1;
+    private static final int RIGHT_INSTRUCTION = -2;
+
     public Puzzle22(String puzzleInput) {
         super(puzzleInput);
+    }
+
+    private static Point findOrigin(char[][] maze) {
+        for (var col = 0; col < maze[0].length; col++) {
+            if (maze[0][col] == '.') {
+                return new Point(0, col);
+            }
+        }
+        throw new IllegalArgumentException("No origin found");
     }
 
     @Override
@@ -230,16 +244,6 @@ public class Puzzle22 extends AbstractPuzzle {
         return 1000L * (point.row + 1) + 4L * (point.col + 1) + direction.ordinal();
     }
 
-    private static Point findOrigin(char[][] maze) {
-        for (var col = 0; col < maze[0].length; col++) {
-            if (maze[0][col] == '.') {
-                return new Point(0, col);
-            }
-        }
-        throw new IllegalArgumentException("No origin found");
-    }
-
-
     // Parses the maze into a 2D array of characters.
     private char[][] parseGrid() {
         var rowLines = getPuzzleInput().split("\n\n")[0].split("\n");
@@ -261,10 +265,6 @@ public class Puzzle22 extends AbstractPuzzle {
         return maze;
     }
 
-    // Instructions for how to move along the path
-    // Values less than 0 are special: -1 indicates a left turn and -2 indicates a right turn
-    private static final int LEFT_INSTRUCTION = -1;
-    private static final int RIGHT_INSTRUCTION = -2;
     private List<Integer> parseInstructions() {
         var instructions = new ArrayList<Integer>();
         var matcher = Pattern.compile("(\\d+|[LR])").matcher(getPuzzleInput().split("\n\n")[1]);
@@ -278,15 +278,11 @@ public class Puzzle22 extends AbstractPuzzle {
         return instructions;
     }
 
-    private interface MoveFn {
-        Optional<Pair<Point, Direction>> move(Point point, Direction direction);
-    }
-
     private enum Direction {
-        RIGHT (0, 1),
-        DOWN (1, 0),
-        LEFT (0, -1),
-        UP (-1, 0);
+        RIGHT(0, 1),
+        DOWN(1, 0),
+        LEFT(0, -1),
+        UP(-1, 0);
 
         private final int row;
         private final int col;
@@ -313,6 +309,10 @@ public class Puzzle22 extends AbstractPuzzle {
                 case UP -> LEFT;
             };
         }
+    }
+
+    private interface MoveFn {
+        Optional<Pair<Point, Direction>> move(Point point, Direction direction);
     }
 
     private record Point(int row, int col) {

@@ -27,5 +27,5 @@ public class TestPuzzle17 extends BasePuzzleTest {
     public void testSolvePart2() throws Exception {
         var puzzle = new Puzzle17(getStoredInput(17));
         assertEquals(puzzle.solvePart2(), "1570434782634");
-   }
+    }
 }

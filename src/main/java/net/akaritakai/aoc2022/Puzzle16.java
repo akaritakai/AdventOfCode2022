@@ -67,24 +67,6 @@ public class Puzzle16 extends AbstractPuzzle {
         private final int[] flowRates;
         private final int[][] distances;
 
-        private int[] calculateFlow() {
-            var memo = new int[1 << numValves];
-            calculateFlow(memo, 0, 0, 0, 0, 0);
-            return memo;
-        }
-
-        private void calculateFlow(int[] memo, int minute, int position, int used, int flowRate, int accumulatedFlow) {
-            memo[used] = Math.max(memo[used], accumulatedFlow + (maxTime - minute) * flowRate);
-            for (var i = 0; i < numValves; i++) {
-                if ((used & (1 << i)) == 0) {
-                    var distance = distances[position][i] + 1;
-                    if (minute + distance < maxTime) {
-                        calculateFlow(memo, minute + distance, i, used | (1 << i), flowRate + flowRates[i], accumulatedFlow + flowRate * distance);
-                    }
-                }
-            }
-        }
-
         private Valves(int maxTime) {
             this.maxTime = maxTime;
 
@@ -147,6 +129,24 @@ public class Puzzle16 extends AbstractPuzzle {
             for (String valve1 : valves) {
                 for (String valve2 : valves) {
                     this.distances[valves.indexOf(valve1)][valves.indexOf(valve2)] = distances.get(Pair.of(valve1, valve2));
+                }
+            }
+        }
+
+        private int[] calculateFlow() {
+            var memo = new int[1 << numValves];
+            calculateFlow(memo, 0, 0, 0, 0, 0);
+            return memo;
+        }
+
+        private void calculateFlow(int[] memo, int minute, int position, int used, int flowRate, int accumulatedFlow) {
+            memo[used] = Math.max(memo[used], accumulatedFlow + (maxTime - minute) * flowRate);
+            for (var i = 0; i < numValves; i++) {
+                if ((used & (1 << i)) == 0) {
+                    var distance = distances[position][i] + 1;
+                    if (minute + distance < maxTime) {
+                        calculateFlow(memo, minute + distance, i, used | (1 << i), flowRate + flowRates[i], accumulatedFlow + flowRate * distance);
+                    }
                 }
             }
         }

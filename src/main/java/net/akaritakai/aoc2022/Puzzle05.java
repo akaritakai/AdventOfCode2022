@@ -1,6 +1,9 @@
 package net.akaritakai.aoc2022;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 /**
@@ -10,6 +13,16 @@ public class Puzzle05 extends AbstractPuzzle {
 
     public Puzzle05(String puzzleInput) {
         super(puzzleInput);
+    }
+
+    private static String stackTops(Stack<Character>[] stacks) {
+        StringBuilder sb = new StringBuilder();
+        for (var stack : stacks) {
+            if (stack != null && !stack.isEmpty()) {
+                sb.append(stack.peek());
+            }
+        }
+        return sb.toString();
     }
 
     @Override
@@ -52,17 +65,12 @@ public class Puzzle05 extends AbstractPuzzle {
         return stackTops(stacks);
     }
 
-    private static String stackTops(Stack<Character>[] stacks) {
-        StringBuilder sb = new StringBuilder();
-        for (var stack : stacks) {
-            if (stack != null && !stack.isEmpty()) {
-                sb.append(stack.peek());
-            }
-        }
-        return sb.toString();
+    private record Instruction(int count, int from, int to) {
     }
 
-    /** Parses the input, supporting up to 9 stacks. */
+    /**
+     * Parses the input, supporting up to 9 stacks.
+     */
     private final class Input {
         private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
 
@@ -111,8 +119,5 @@ public class Puzzle05 extends AbstractPuzzle {
                 }
             }
         }
-    }
-
-    private record Instruction(int count, int from, int to) {
     }
 }

@@ -8,8 +8,18 @@ import java.util.regex.Pattern;
  */
 public class Puzzle04 extends AbstractPuzzle {
 
+    private static final Pattern LINE_PATTERN = Pattern.compile("^(\\d+)-(\\d+),(\\d+)-(\\d+)$");
+
     public Puzzle04(String puzzleInput) {
         super(puzzleInput);
+    }
+
+    private static boolean fullyContains(int[] ranges) {
+        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[3]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[1]);
+    }
+
+    private static boolean intersects(int[] ranges) {
+        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[2]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[0]);
     }
 
     @Override
@@ -28,16 +38,6 @@ public class Puzzle04 extends AbstractPuzzle {
         var count = Arrays.stream(parseInput()).filter(Puzzle04::intersects).count();
         return String.valueOf(count);
     }
-
-    private static boolean fullyContains(int[] ranges) {
-        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[3]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[1]);
-    }
-
-    private static boolean intersects(int[] ranges) {
-        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[2]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[0]);
-    }
-
-    private static final Pattern LINE_PATTERN = Pattern.compile("^(\\d+)-(\\d+),(\\d+)-(\\d+)$");
 
     private int[][] parseInput() {
         return getPuzzleInput().lines()

@@ -16,6 +16,7 @@ public class Puzzle07 extends AbstractPuzzle {
     public int getDay() {
         return 7;
     }
+
     @Override
     public String solvePart1() {
         var totalSize = new Input().directorySizes().filter(size -> size <= 100_000).sum();
@@ -35,7 +36,28 @@ public class Puzzle07 extends AbstractPuzzle {
         return String.valueOf(dirSize);
     }
 
-    /** Builds the file system metadata state from the queries and responses. */
+    private static final class Node {
+        private final Node parent;
+        private final Map<String, Node> children = new HashMap<>();
+        private final boolean isDirectory;
+        private final int size;
+
+        private Node(Node parent) {
+            this.parent = parent;
+            this.isDirectory = true;
+            this.size = 0;
+        }
+
+        private Node(Node parent, int size) {
+            this.parent = parent;
+            this.isDirectory = false;
+            this.size = size;
+        }
+    }
+
+    /**
+     * Builds the file system metadata state from the queries and responses.
+     */
     private final class Input {
         private final Node root = new Node(null);
         private final Map<Node, Integer> recursiveSizes = new HashMap<>();
@@ -101,25 +123,6 @@ public class Puzzle07 extends AbstractPuzzle {
                 recursiveSize(root);
             }
             return recursiveSizes.values().stream().mapToInt(i -> i);
-        }
-    }
-
-    private static final class Node {
-        private final Node parent;
-        private final Map<String, Node> children = new HashMap<>();
-        private final boolean isDirectory;
-        private final int size;
-
-        private Node(Node parent) {
-            this.parent = parent;
-            this.isDirectory = true;
-            this.size = 0;
-        }
-
-        private Node(Node parent, int size) {
-            this.parent = parent;
-            this.isDirectory = false;
-            this.size = size;
         }
     }
 }

@@ -287,6 +287,6 @@ public class TestPuzzle16 extends BasePuzzleTest {
     public void testSolvePart2() throws Exception {
         var puzzle = new Puzzle16(getStoredInput(16));
         assertEquals(puzzle.solvePart2(), "2316");
-   }
+    }
 
 }

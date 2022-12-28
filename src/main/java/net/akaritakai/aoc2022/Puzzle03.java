@@ -12,6 +12,26 @@ public class Puzzle03 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
+    private static int findCommonBit(String... strings) {
+        var bitSet = toBitSet(strings[0]);
+        for (var i = 1; i < strings.length; i++) {
+            bitSet.and(toBitSet(strings[i]));
+        }
+        return bitSet.nextSetBit(0) + 1;
+    }
+
+    private static BitSet toBitSet(String s) {
+        var bitSet = new BitSet(52);
+        s.chars().forEach(c -> {
+            if (c >= 'a' && c <= 'z') {
+                bitSet.set(c - 'a');
+            } else if (c >= 'A' && c <= 'Z') {
+                bitSet.set(c - 'A' + 26);
+            }
+        });
+        return bitSet;
+    }
+
     @Override
     public int getDay() {
         return 3;
@@ -37,25 +57,5 @@ public class Puzzle03 extends AbstractPuzzle {
             sum += findCommonBit(rucksacks[i], rucksacks[i + 1], rucksacks[i + 2]);
         }
         return String.valueOf(sum);
-    }
-
-    private static int findCommonBit(String... strings) {
-        var bitSet = toBitSet(strings[0]);
-        for (var i = 1; i < strings.length; i++) {
-            bitSet.and(toBitSet(strings[i]));
-        }
-        return bitSet.nextSetBit(0) + 1;
-    }
-
-    private static BitSet toBitSet(String s) {
-        var bitSet = new BitSet(52);
-        s.chars().forEach(c -> {
-            if (c >= 'a' && c <= 'z') {
-                bitSet.set(c - 'a');
-            } else if (c >= 'A' && c <= 'Z') {
-                bitSet.set(c - 'A' + 26);
-            }
-        });
-        return bitSet;
     }
 }

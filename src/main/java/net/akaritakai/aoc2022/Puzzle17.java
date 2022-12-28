@@ -76,10 +76,38 @@ public class Puzzle17 extends AbstractPuzzle {
         return 0; // Not found
     }
 
+    private Supplier<Integer> nextPush() {
+        return new Supplier<>() {
+            private final char[] input = getPuzzleInput().trim().toCharArray();
+            private int i = 0;
+
+            @Override
+            public Integer get() {
+                return switch (input[i++ % input.length]) {
+                    case '<' -> -1;
+                    case '>' -> 1;
+                    default -> throw new IllegalArgumentException("Invalid push: " + input[i - 1]);
+                };
+            }
+        };
+    }
+
     private final class Tetris {
         private final Supplier<Integer> nextPush = nextPush();
         private final Supplier<Shape> nextShape = nextShape();
         private final List<Integer> grid = new ArrayList<>();
+
+        private static Supplier<Shape> nextShape() {
+            return new Supplier<>() {
+                private final Shape[] shapes = Shape.values();
+                private int i = 0;
+
+                @Override
+                public Shape get() {
+                    return shapes[i++ % shapes.length];
+                }
+            };
+        }
 
         private void tick() {
             var shape = nextShape.get();
@@ -97,6 +125,24 @@ public class Puzzle17 extends AbstractPuzzle {
             return x < 0 || x > 6 || y < 0 || (y < grid.size() && (grid.get(y) & (0b1000000 >> x)) != 0);
         }
 
+        private enum Shape {
+            SHAPE_1, // '-'
+            SHAPE_2, // '+'
+            SHAPE_3, // Backwards 'L'
+            SHAPE_4, // 'I'
+            SHAPE_5; // Square
+
+            private int[] spawn(int y) {
+                return switch (this) {
+                    case SHAPE_1 -> new int[]{2, y + 4};
+                    case SHAPE_2 -> new int[]{3, y + 6};
+                    case SHAPE_3 -> new int[]{4, y + 6};
+                    case SHAPE_4 -> new int[]{2, y + 7};
+                    case SHAPE_5 -> new int[]{2, y + 5};
+                };
+            }
+        }
+
         private final class Block {
             private final Shape shape;
             private int x;
@@ -110,31 +156,31 @@ public class Puzzle17 extends AbstractPuzzle {
 
             private int[][] leftEdge() {
                 return switch (shape) {
-                    case SHAPE_1 -> new int[][] { {x, y} };
-                    case SHAPE_2 -> new int[][] { {x, y}, {x - 1, y - 1}, {x, y - 2} };
-                    case SHAPE_3 -> new int[][] { {x, y}, {x, y - 1}, {x - 2, y - 2} };
-                    case SHAPE_4 -> new int[][] { {x, y}, {x, y - 1}, {x, y - 2}, {x, y - 3} };
-                    case SHAPE_5 -> new int[][] { {x, y}, {x, y - 1} };
+                    case SHAPE_1 -> new int[][]{{x, y}};
+                    case SHAPE_2 -> new int[][]{{x, y}, {x - 1, y - 1}, {x, y - 2}};
+                    case SHAPE_3 -> new int[][]{{x, y}, {x, y - 1}, {x - 2, y - 2}};
+                    case SHAPE_4 -> new int[][]{{x, y}, {x, y - 1}, {x, y - 2}, {x, y - 3}};
+                    case SHAPE_5 -> new int[][]{{x, y}, {x, y - 1}};
                 };
             }
 
             private int[][] rightEdge() {
                 return switch (shape) {
-                    case SHAPE_1 -> new int[][] { {x + 3, y} };
-                    case SHAPE_2 -> new int[][] { {x, y}, {x + 1, y - 1}, {x, y - 2} };
-                    case SHAPE_3 -> new int[][] { {x, y}, {x, y - 1}, {x, y - 2} };
-                    case SHAPE_4 -> new int[][] { {x, y}, {x, y - 1}, {x, y - 2}, {x, y - 3} };
-                    case SHAPE_5 -> new int[][] { {x + 1, y}, {x + 1, y - 1} };
+                    case SHAPE_1 -> new int[][]{{x + 3, y}};
+                    case SHAPE_2 -> new int[][]{{x, y}, {x + 1, y - 1}, {x, y - 2}};
+                    case SHAPE_3 -> new int[][]{{x, y}, {x, y - 1}, {x, y - 2}};
+                    case SHAPE_4 -> new int[][]{{x, y}, {x, y - 1}, {x, y - 2}, {x, y - 3}};
+                    case SHAPE_5 -> new int[][]{{x + 1, y}, {x + 1, y - 1}};
                 };
             }
 
             private int[][] bottomEdge() {
                 return switch (shape) {
-                    case SHAPE_1 -> new int[][] { {x, y}, {x + 1, y}, {x + 2, y}, {x + 3, y} };
-                    case SHAPE_2 -> new int[][] { {x - 1, y - 1}, {x, y - 2}, {x + 1, y - 1} };
-                    case SHAPE_3 -> new int[][] { {x - 2, y - 2}, {x - 1, y - 2}, {x, y - 2} };
-                    case SHAPE_4 -> new int[][] { {x, y - 3} };
-                    case SHAPE_5 -> new int[][] { {x, y - 1}, {x + 1, y - 1} };
+                    case SHAPE_1 -> new int[][]{{x, y}, {x + 1, y}, {x + 2, y}, {x + 3, y}};
+                    case SHAPE_2 -> new int[][]{{x - 1, y - 1}, {x, y - 2}, {x + 1, y - 1}};
+                    case SHAPE_3 -> new int[][]{{x - 2, y - 2}, {x - 1, y - 2}, {x, y - 2}};
+                    case SHAPE_4 -> new int[][]{{x, y - 3}};
+                    case SHAPE_5 -> new int[][]{{x, y - 1}, {x + 1, y - 1}};
                 };
             }
 
@@ -186,51 +232,5 @@ public class Puzzle17 extends AbstractPuzzle {
                 }
             }
         }
-
-        private enum Shape {
-            SHAPE_1, // '-'
-            SHAPE_2, // '+'
-            SHAPE_3, // Backwards 'L'
-            SHAPE_4, // 'I'
-            SHAPE_5; // Square
-
-            private int[] spawn(int y) {
-                return switch (this) {
-                    case SHAPE_1 -> new int[] { 2, y + 4 };
-                    case SHAPE_2 -> new int[] { 3, y + 6 };
-                    case SHAPE_3 -> new int[] { 4, y + 6 };
-                    case SHAPE_4 -> new int[] { 2, y + 7 };
-                    case SHAPE_5 -> new int[] { 2, y + 5 };
-                };
-            }
-        }
-
-        private static Supplier<Shape> nextShape() {
-            return new Supplier<>() {
-                private final Shape[] shapes = Shape.values();
-                private int i = 0;
-
-                @Override
-                public Shape get() {
-                    return shapes[i++ % shapes.length];
-                }
-            };
-        }
-    }
-
-    private Supplier<Integer> nextPush() {
-        return new Supplier<>() {
-            private final char[] input = getPuzzleInput().trim().toCharArray();
-            private int i = 0;
-
-            @Override
-            public Integer get() {
-                return switch (input[i++ % input.length]) {
-                    case '<' -> -1;
-                    case '>' -> 1;
-                    default -> throw new IllegalArgumentException("Invalid push: " + input[i - 1]);
-                };
-            }
-        };
     }
 }

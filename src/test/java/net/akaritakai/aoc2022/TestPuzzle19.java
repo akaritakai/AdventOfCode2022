@@ -1,4 +1,3 @@
-
 package net.akaritakai.aoc2022;
 
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestPuzzle19 extends BasePuzzleTest {
     @Test
     public void testPart1Example1() {
-        var blueprint = new Puzzle19.Blueprint(1, new int[][] {
+        var blueprint = new Puzzle19.Blueprint(1, new int[][]{
                 {4, 0, 0, 0},
                 {2, 0, 0, 0},
                 {3, 14, 0, 0},
@@ -19,7 +18,7 @@ public class TestPuzzle19 extends BasePuzzleTest {
 
     @Test
     public void testPart1Example2() {
-        var blueprint = new Puzzle19.Blueprint(1, new int[][] {
+        var blueprint = new Puzzle19.Blueprint(1, new int[][]{
                 {2, 0, 0, 0},
                 {3, 0, 0, 0},
                 {3, 8, 0, 0},
@@ -45,7 +44,7 @@ public class TestPuzzle19 extends BasePuzzleTest {
 
     @Test
     public void testPart2Example1() {
-        var blueprint = new Puzzle19.Blueprint(1, new int[][] {
+        var blueprint = new Puzzle19.Blueprint(1, new int[][]{
                 {4, 0, 0, 0},
                 {2, 0, 0, 0},
                 {3, 14, 0, 0},
@@ -56,7 +55,7 @@ public class TestPuzzle19 extends BasePuzzleTest {
 
     @Test
     public void testPart2Example2() {
-        var blueprint = new Puzzle19.Blueprint(1, new int[][] {
+        var blueprint = new Puzzle19.Blueprint(1, new int[][]{
                 {2, 0, 0, 0},
                 {3, 0, 0, 0},
                 {3, 8, 0, 0},
@@ -69,5 +68,5 @@ public class TestPuzzle19 extends BasePuzzleTest {
     public void testSolvePart2() throws Exception {
         var puzzle = new Puzzle19(getStoredInput(19));
         assertEquals(puzzle.solvePart2(), "4114");
-   }
+    }
 }

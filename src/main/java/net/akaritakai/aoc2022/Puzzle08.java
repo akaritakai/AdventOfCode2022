@@ -90,29 +90,29 @@ public class Puzzle08 extends AbstractPuzzle {
         Stack<Integer> stack = new Stack<>();
         for (var row = 0; row < numRows; row++) {
             // Add right-facing visibility to the score using a monotonic stack
-           for (var col = 0; col < numCols; col++) {
-               while (!stack.isEmpty() && grid[row][col] >= grid[row][stack.peek()]) {
-                   var i = stack.pop();
-                   score[row][i] *= col - i;
-               }
-               stack.push(col);
-           }
-           while (!stack.isEmpty()) {
-               var i = stack.pop();
-               score[row][i] *= numCols - i - 1;
-           }
-           // Add left-facing visibility to the score using a monotonic stack
-           for (var col = numCols - 1; col >= 0; col--) {
-               while (!stack.isEmpty() && grid[row][col] >= grid[row][stack.peek()]) {
-                   var i = stack.pop();
-                   score[row][i] *= i - col;
-               }
-               stack.push(col);
-          }
-          while (!stack.isEmpty()) {
-              var i = stack.pop();
-              score[row][i] *= i;
-          }
+            for (var col = 0; col < numCols; col++) {
+                while (!stack.isEmpty() && grid[row][col] >= grid[row][stack.peek()]) {
+                    var i = stack.pop();
+                    score[row][i] *= col - i;
+                }
+                stack.push(col);
+            }
+            while (!stack.isEmpty()) {
+                var i = stack.pop();
+                score[row][i] *= numCols - i - 1;
+            }
+            // Add left-facing visibility to the score using a monotonic stack
+            for (var col = numCols - 1; col >= 0; col--) {
+                while (!stack.isEmpty() && grid[row][col] >= grid[row][stack.peek()]) {
+                    var i = stack.pop();
+                    score[row][i] *= i - col;
+                }
+                stack.push(col);
+            }
+            while (!stack.isEmpty()) {
+                var i = stack.pop();
+                score[row][i] *= i;
+            }
         }
 
         for (var col = 0; col < numCols; col++) {

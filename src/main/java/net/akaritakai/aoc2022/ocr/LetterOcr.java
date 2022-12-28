@@ -8,8 +8,9 @@ public class LetterOcr {
     private static final int LETTER_HEIGHT = 6;
 
     private static final Map<Character, boolean[][]> LETTERS = new HashMap<>();
+
     static {
-        LETTERS.put('A', new boolean[][] {
+        LETTERS.put('A', new boolean[][]{
                 {false, true, true, false},
                 {true, false, false, true},
                 {true, false, false, true},
@@ -17,7 +18,7 @@ public class LetterOcr {
                 {true, false, false, true},
                 {true, false, false, true}
         });
-        LETTERS.put('B', new boolean[][] {
+        LETTERS.put('B', new boolean[][]{
                 {true, true, true, false},
                 {true, false, false, true},
                 {true, true, true, false},
@@ -25,7 +26,7 @@ public class LetterOcr {
                 {true, false, false, true},
                 {true, true, true, false}
         });
-        LETTERS.put('C', new boolean[][] {
+        LETTERS.put('C', new boolean[][]{
                 {false, true, true, false},
                 {true, false, false, true},
                 {true, false, false, false},
@@ -34,7 +35,7 @@ public class LetterOcr {
                 {false, true, true, false}
         });
         // Letter D is unknown
-        LETTERS.put('E', new boolean[][] {
+        LETTERS.put('E', new boolean[][]{
                 {true, true, true, true},
                 {true, false, false, false},
                 {true, true, true, false},
@@ -42,7 +43,7 @@ public class LetterOcr {
                 {true, false, false, false},
                 {true, true, true, true}
         });
-        LETTERS.put('F', new boolean[][] {
+        LETTERS.put('F', new boolean[][]{
                 {true, true, true, true},
                 {true, false, false, false},
                 {true, true, true, false},
@@ -50,7 +51,7 @@ public class LetterOcr {
                 {true, false, false, false},
                 {true, false, false, false}
         });
-        LETTERS.put('G', new boolean[][] {
+        LETTERS.put('G', new boolean[][]{
                 {false, true, true, false},
                 {true, false, false, true},
                 {true, false, false, false},
@@ -58,7 +59,7 @@ public class LetterOcr {
                 {true, false, false, true},
                 {false, true, true, true}
         });
-        LETTERS.put('H', new boolean[][] {
+        LETTERS.put('H', new boolean[][]{
                 {true, false, false, true},
                 {true, false, false, true},
                 {true, true, true, true},
@@ -66,7 +67,7 @@ public class LetterOcr {
                 {true, false, false, true},
                 {true, false, false, true}
         });
-        LETTERS.put('I', new boolean[][] {
+        LETTERS.put('I', new boolean[][]{
                 {false, true, true, true},
                 {false, false, true, false},
                 {false, false, true, false},
@@ -74,7 +75,7 @@ public class LetterOcr {
                 {false, false, true, false},
                 {false, true, true, true}
         });
-        LETTERS.put('J', new boolean[][] {
+        LETTERS.put('J', new boolean[][]{
                 {false, false, true, true},
                 {false, false, false, true},
                 {false, false, false, true},
@@ -82,7 +83,7 @@ public class LetterOcr {
                 {true, false, false, true},
                 {false, true, true, false}
         });
-        LETTERS.put('K', new boolean[][] {
+        LETTERS.put('K', new boolean[][]{
                 {true, false, false, true},
                 {true, false, true, false},
                 {true, true, false, false},
@@ -90,7 +91,7 @@ public class LetterOcr {
                 {true, false, true, false},
                 {true, false, false, true}
         });
-        LETTERS.put('L', new boolean[][] {
+        LETTERS.put('L', new boolean[][]{
                 {true, false, false, false},
                 {true, false, false, false},
                 {true, false, false, false},
@@ -100,7 +101,7 @@ public class LetterOcr {
         });
         // Letter M is unknown
         // Letter N is unknown
-        LETTERS.put('O', new boolean[][] {
+        LETTERS.put('O', new boolean[][]{
                 {false, true, true, false},
                 {true, false, false, true},
                 {true, false, false, true},
@@ -108,7 +109,7 @@ public class LetterOcr {
                 {true, false, false, true},
                 {false, true, true, false}
         });
-        LETTERS.put('P', new boolean[][] {
+        LETTERS.put('P', new boolean[][]{
                 {true, true, true, false},
                 {true, false, false, true},
                 {true, false, false, true},
@@ -117,7 +118,7 @@ public class LetterOcr {
                 {true, false, false, false}
         });
         // Letter Q is unknown
-        LETTERS.put('R', new boolean[][] {
+        LETTERS.put('R', new boolean[][]{
                 {true, true, true, false},
                 {true, false, false, true},
                 {true, false, false, true},
@@ -125,7 +126,7 @@ public class LetterOcr {
                 {true, false, true, false},
                 {true, false, false, true}
         });
-        LETTERS.put('S', new boolean[][] {
+        LETTERS.put('S', new boolean[][]{
                 {false, true, true, true},
                 {true, false, false, false},
                 {true, false, false, false},
@@ -134,7 +135,7 @@ public class LetterOcr {
                 {true, true, true, false}
         });
         // Letter T is unknown
-        LETTERS.put('U', new boolean[][] {
+        LETTERS.put('U', new boolean[][]{
                 {true, false, false, true},
                 {true, false, false, true},
                 {true, false, false, true},
@@ -145,7 +146,7 @@ public class LetterOcr {
         // Letter V is unknown
         // Letter W is unknown
         // Letter X is unknown
-        LETTERS.put('Y', new boolean[][] {
+        LETTERS.put('Y', new boolean[][]{
                 {true, false, false, false},
                 {true, false, false, false},
                 {false, true, false, true},
@@ -153,7 +154,7 @@ public class LetterOcr {
                 {false, false, true, false},
                 {false, false, true, false}
         });
-        LETTERS.put('Z', new boolean[][] {
+        LETTERS.put('Z', new boolean[][]{
                 {true, true, true, true},
                 {false, false, false, true},
                 {false, false, true, false},
@@ -168,7 +169,8 @@ public class LetterOcr {
             var letter = letterEntry.getKey();
             var pattern = letterEntry.getValue();
             boolean allMatch = true;
-            OUTER: for (var row = 0; row < LETTER_HEIGHT; row++) {
+            OUTER:
+            for (var row = 0; row < LETTER_HEIGHT; row++) {
                 for (var col = 0; col < LETTER_WIDTH; col++) {
                     try {
                         if (image[rowOffset + row][colOffset + col] != pattern[row][col]) {

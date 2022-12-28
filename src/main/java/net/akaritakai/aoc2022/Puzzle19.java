@@ -2,7 +2,7 @@ package net.akaritakai.aoc2022;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import java.util.*;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -40,6 +40,10 @@ public class Puzzle19 extends AbstractPuzzle {
         return String.valueOf(results[0] * results[1] * results[2]);
     }
 
+    private Blueprint[] parseInput() {
+        return getPuzzleInput().lines().map(Blueprint::parse).toArray(Blueprint[]::new);
+    }
+
     @VisibleForTesting
     static final class Mining {
         private final Blueprint blueprint;
@@ -51,17 +55,27 @@ public class Puzzle19 extends AbstractPuzzle {
         Mining(Blueprint blueprint, int maxTime) {
             this.blueprint = blueprint;
             this.maxTime = maxTime;
-            this.maxCosts = new int[] {
+            this.maxCosts = new int[]{
                     Math.max(Math.max(blueprint.costs[0][0], blueprint.costs[1][0]), Math.max(blueprint.costs[2][0], blueprint.costs[3][0])),
                     Math.max(Math.max(blueprint.costs[0][1], blueprint.costs[1][1]), Math.max(blueprint.costs[2][1], blueprint.costs[3][1])),
                     Math.max(Math.max(blueprint.costs[0][2], blueprint.costs[1][2]), Math.max(blueprint.costs[2][2], blueprint.costs[3][2])),
                     Math.max(Math.max(blueprint.costs[0][3], blueprint.costs[1][3]), Math.max(blueprint.costs[2][3], blueprint.costs[3][3]))};
         }
 
+        private static int buildTime(int[] costs, int[] resources, int[] robots) {
+            int time = 0;
+            for (int i = 0; i < 3; i++) {
+                if (costs[i] == 0) continue;
+                if (costs[i] > 0 && robots[i] == 0) return Integer.MAX_VALUE;
+                time = Math.max(time, (costs[i] - resources[i] + robots[i] - 1) / robots[i]);
+            }
+            return time;
+        }
+
         @VisibleForTesting
         int simulate() {
             bestGeodes = 0;
-            simulate(new int[4], new int[] { 1, 0, 0, 0 }, maxTime);
+            simulate(new int[4], new int[]{1, 0, 0, 0}, maxTime);
             return bestGeodes;
         }
 
@@ -103,20 +117,6 @@ public class Puzzle19 extends AbstractPuzzle {
             bestGeodes = Math.max(bestGeodes, best);
             return best;
         }
-
-        private static int buildTime(int[] costs, int[] resources, int[] robots) {
-            int time = 0;
-            for (int i = 0; i < 3; i++) {
-                if (costs[i] == 0) continue;
-                if (costs[i] > 0 && robots[i] == 0) return Integer.MAX_VALUE;
-                time = Math.max(time, (costs[i] - resources[i] + robots[i] - 1) / robots[i]);
-            }
-            return time;
-        }
-    }
-
-    private Blueprint[] parseInput() {
-        return getPuzzleInput().lines().map(Blueprint::parse).toArray(Blueprint[]::new);
     }
 
     @VisibleForTesting
@@ -134,11 +134,11 @@ public class Puzzle19 extends AbstractPuzzle {
             }
             return new Blueprint(
                     Integer.parseInt(matcher.group(1)),
-                    new int[][] {
-                            { Integer.parseInt(matcher.group(2)), 0, 0, 0 },
-                            { Integer.parseInt(matcher.group(3)), 0, 0, 0 },
-                            { Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5)), 0, 0 },
-                            { Integer.parseInt(matcher.group(6)), 0, Integer.parseInt(matcher.group(7)), 0 }
+                    new int[][]{
+                            {Integer.parseInt(matcher.group(2)), 0, 0, 0},
+                            {Integer.parseInt(matcher.group(3)), 0, 0, 0},
+                            {Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5)), 0, 0},
+                            {Integer.parseInt(matcher.group(6)), 0, Integer.parseInt(matcher.group(7)), 0}
                     });
         }
     }

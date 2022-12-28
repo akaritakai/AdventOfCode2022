@@ -20,6 +20,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class TestPuzzleInputFetcher {
+    private static String randomPuzzle() {
+        return RandomStringUtils.randomAscii(65_535);
+    }
+
+    private static String randomSessionToken() {
+        // Session tokens appear to be 96 characters of ASCII hex digits
+        return RandomStringUtils.random(96, "0123456789abcdef");
+    }
+
     @Test
     public void testGetPuzzleInputInLocalStore() throws Exception {
         var fetcher = Mockito.spy(new PuzzleInputFetcher());
@@ -263,14 +272,5 @@ public class TestPuzzleInputFetcher {
         var sessionTokenPath = Files.createTempFile("session", "token");
         var fetcher = new PuzzleInputFetcher(puzzleStorePath, sessionTokenPath);
         assertThrows(Exception.class, () -> fetcher.fetchLocalPuzzleInput(1));
-    }
-
-    private static String randomPuzzle() {
-        return RandomStringUtils.randomAscii(65_535);
-    }
-
-    private static String randomSessionToken() {
-        // Session tokens appear to be 96 characters of ASCII hex digits
-        return RandomStringUtils.random(96, "0123456789abcdef");
     }
 }

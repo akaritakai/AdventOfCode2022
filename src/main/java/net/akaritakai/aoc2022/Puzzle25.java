@@ -11,29 +11,13 @@ public class Puzzle25 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
-    @Override
-    public int getDay() {
-        return 25;
-    }
-
-    @Override
-    public String solvePart1() {
-        long sum = getPuzzleInput().lines().mapToLong(Puzzle25::fromSnafu).sum();
-        return toSnafu(sum);
-    }
-
-    @Override
-    public String solvePart2() {
-        return "Day 25 has no part 2";
-    }
-
     @VisibleForTesting
     static String toSnafu(long n) {
         int numDigits = 1;
         while ((Math.pow(5, numDigits) - 1) / 2 < Math.abs(n)) {
             numDigits++;
         }
-        var digits = new char[] { '=', '-', '0', '1', '2' };
+        var digits = new char[]{'=', '-', '0', '1', '2'};
         var sb = new StringBuilder();
         for (; numDigits > 0; numDigits--) {
             var base = Math.pow(5, numDigits - 1);
@@ -62,5 +46,21 @@ public class Puzzle25 extends AbstractPuzzle {
             }
         }
         return n;
+    }
+
+    @Override
+    public int getDay() {
+        return 25;
+    }
+
+    @Override
+    public String solvePart1() {
+        long sum = getPuzzleInput().lines().mapToLong(Puzzle25::fromSnafu).sum();
+        return toSnafu(sum);
+    }
+
+    @Override
+    public String solvePart2() {
+        return "Day 25 has no part 2";
     }
 }
