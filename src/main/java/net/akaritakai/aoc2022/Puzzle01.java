@@ -1,5 +1,6 @@
 package net.akaritakai.aoc2022;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -61,30 +62,8 @@ public class Puzzle01 extends AbstractPuzzle {
      * Returns an iterator that for each elf yields the Calories they're carrying.
      */
     private Iterator<Integer> parseInput() {
-        return new Iterator<>() {
-            final String input = getPuzzleInput();
-            int i = 0;
-
-            @Override
-            public Integer next() {
-                var sum = 0;
-                while (hasNext()) {
-                    var c = input.charAt(i++);
-                    if (c == '\n') break; // End of group
-                    var n = 0;
-                    do {
-                        n = (10 * n) + (c - '0');
-                        c = input.charAt(i++);
-                    } while (c != '\n'); // End of line
-                    sum += n;
-                }
-                return sum;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return i < input.length();
-            }
-        };
+        return Arrays.stream(getPuzzleInput().split("\n\n"))
+                .map(elf -> elf.lines().mapToInt(Integer::parseInt).sum())
+                .iterator();
     }
 }
