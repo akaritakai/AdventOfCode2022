@@ -13,18 +13,15 @@ public class Puzzle25 extends AbstractPuzzle {
 
     @VisibleForTesting
     static String toSnafu(long n) {
-        int numDigits = 1;
-        while ((Math.pow(5, numDigits) - 1) / 2 < Math.abs(n)) {
-            numDigits++;
-        }
+        int numDigits = (int) Math.ceil(Math.log(2 * Math.abs(n) + 1) / Math.log(5));
         var digits = new char[]{'=', '-', '0', '1', '2'};
         var sb = new StringBuilder();
         for (; numDigits > 0; numDigits--) {
             var base = Math.pow(5, numDigits - 1);
-            for (int i = 1; i <= 5; i++) {
-                if (5 * base + 2 * n + 1 <= 2 * base * i) {
-                    sb.append(digits[i - 1]);
-                    n += (3 - i) * base;
+            for (int i = 0; i < 5; i++) {
+                if (3 * base + 2 * n + 1 <= 2 * base * i) {
+                    sb.append(digits[i]);
+                    n += (2 - i) * base;
                     break;
                 }
             }
