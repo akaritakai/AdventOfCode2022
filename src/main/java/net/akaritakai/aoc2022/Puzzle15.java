@@ -23,6 +23,23 @@ public class Puzzle15 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
+    @SuppressWarnings("rawtypes")
+    private static ArithExpr mkDist(Context context, ArithExpr x1, ArithExpr y1, ArithExpr x2, ArithExpr y2) {
+        var dx = mkAbs(context, context.mkSub(x1, x2));
+        var dy = mkAbs(context, context.mkSub(y1, y2));
+        return context.mkAdd(dx, dy);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static ArithExpr mkAbs(Context context, ArithExpr expr) {
+        var zero = context.mkInt(0);
+        return (ArithExpr) context.mkITE(context.mkGe(expr, zero), expr, context.mkSub(zero, expr));
+    }
+
+    private static int distance(Point a, Point b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
+
     @Override
     public int getDay() {
         return 15;
@@ -126,8 +143,8 @@ public class Puzzle15 extends AbstractPuzzle {
                 }
 
                 // (x, y) has to be surrounded by excluded points.
-                for (var d : new int[][] { {-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
-                    var x1 = context.mkAdd(x,  context.mkInt(d[0]));
+                for (var d : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
+                    var x1 = context.mkAdd(x, context.mkInt(d[0]));
                     var y1 = context.mkAdd(y, context.mkInt(d[1]));
                     var elements = pairs.stream()
                             .map(pair -> {
@@ -150,23 +167,6 @@ public class Puzzle15 extends AbstractPuzzle {
                 return (4_000_000 * a) + b;
             }
         }
-    }
-
-    @SuppressWarnings("rawtypes")
-    private static ArithExpr mkDist(Context context, ArithExpr x1, ArithExpr y1, ArithExpr x2, ArithExpr y2) {
-        var dx = mkAbs(context, context.mkSub(x1, x2));
-        var dy = mkAbs(context, context.mkSub(y1, y2));
-        return context.mkAdd(dx, dy);
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static ArithExpr mkAbs(Context context, ArithExpr expr) {
-        var zero = context.mkInt(0);
-        return (ArithExpr) context.mkITE(context.mkGe(expr, zero), expr, context.mkSub(zero, expr));
-    }
-
-    private static int distance(Point a, Point b) {
-        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
     private record SensorAndBeacon(Point sensor, Point beacon) {

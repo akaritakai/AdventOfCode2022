@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
  */
 public class Puzzle21 extends AbstractPuzzle {
 
+    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("(\\S+): (\\d+)");
+    private static final Pattern OPERATION_PATTERN = Pattern.compile("(\\S+): (\\S+) (\\S+) (\\S+)");
+
     public Puzzle21(String puzzleInput) {
         super(puzzleInput);
     }
@@ -76,9 +79,6 @@ public class Puzzle21 extends AbstractPuzzle {
         }
         throw new IllegalStateException("Unknown node type: " + node.getClass().getName());
     }
-
-    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("(\\S+): (\\d+)");
-    private static final Pattern OPERATION_PATTERN = Pattern.compile("(\\S+): (\\S+) (\\S+) (\\S+)");
 
     private Map<String, Node> parseInput() {
         var equations = new HashMap<String, Node>();

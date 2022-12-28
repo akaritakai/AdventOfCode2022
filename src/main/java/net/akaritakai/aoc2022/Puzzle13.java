@@ -16,44 +16,6 @@ public class Puzzle13 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
-    @Override
-    public int getDay() {
-        return 13;
-    }
-
-    @Override
-    public String solvePart1() {
-        var sum = 0;
-        var pairs = parseInput();
-        for (var i = 0; i < pairs.size(); i++) {
-            var pair = pairs.get(i);
-            if (comparator().compare(pair.getLeft(), pair.getRight()) <= 0) {
-                sum += i + 1;
-            }
-        }
-        return String.valueOf(sum);
-    }
-
-    @Override
-    public String solvePart2() {
-        var pairs = parseInput();
-        var packets = pairs.stream()
-                .flatMap(pair -> Stream.of(pair.getLeft(), pair.getRight()))
-                .collect(Collectors.toCollection(ArrayList::new));
-        var divider1 = parsePacket("[[2]]");
-        var divider2 = parsePacket("[[6]]");
-        packets.add(divider1);
-        packets.add(divider2);
-        packets.sort(comparator());
-        var key = 1;
-        for (var i = 0; i < packets.size(); i++) {
-            if (packets.get(i) == divider1 || packets.get(i) == divider2) {
-                key *= i + 1;
-            }
-        }
-        return String.valueOf(key);
-    }
-
     private static Comparator<Node> comparator() {
         return (first, second) -> {
             if (first instanceof ValueNode left && second instanceof ValueNode right) {
@@ -73,17 +35,6 @@ public class Puzzle13 extends AbstractPuzzle {
             }
             throw new IllegalArgumentException("Invalid nodes: " + first + ", " + second);
         };
-    }
-
-    private List<Pair<Node, Node>> parseInput() {
-        return Arrays.stream(getPuzzleInput().split("\n\n"))
-                .map(block -> {
-                    var lines = block.split("\n");
-                    var packet1 = parsePacket(lines[0]);
-                    var packet2 = parsePacket(lines[1]);
-                    return Pair.of(packet1, packet2);
-                })
-                .toList();
     }
 
     private static Node parsePacket(String packet) {
@@ -122,6 +73,55 @@ public class Puzzle13 extends AbstractPuzzle {
         return stack.pop();
     }
 
+    @Override
+    public int getDay() {
+        return 13;
+    }
+
+    @Override
+    public String solvePart1() {
+        var sum = 0;
+        var pairs = parseInput();
+        for (var i = 0; i < pairs.size(); i++) {
+            var pair = pairs.get(i);
+            if (comparator().compare(pair.getLeft(), pair.getRight()) <= 0) {
+                sum += i + 1;
+            }
+        }
+        return String.valueOf(sum);
+    }
+
+    @Override
+    public String solvePart2() {
+        var pairs = parseInput();
+        var packets = pairs.stream()
+                .flatMap(pair -> Stream.of(pair.getLeft(), pair.getRight()))
+                .collect(Collectors.toCollection(ArrayList::new));
+        var divider1 = parsePacket("[[2]]");
+        var divider2 = parsePacket("[[6]]");
+        packets.add(divider1);
+        packets.add(divider2);
+        packets.sort(comparator());
+        var key = 1;
+        for (var i = 0; i < packets.size(); i++) {
+            if (packets.get(i) == divider1 || packets.get(i) == divider2) {
+                key *= i + 1;
+            }
+        }
+        return String.valueOf(key);
+    }
+
+    private List<Pair<Node, Node>> parseInput() {
+        return Arrays.stream(getPuzzleInput().split("\n\n"))
+                .map(block -> {
+                    var lines = block.split("\n");
+                    var packet1 = parsePacket(lines[0]);
+                    var packet2 = parsePacket(lines[1]);
+                    return Pair.of(packet1, packet2);
+                })
+                .toList();
+    }
+
     private interface Node {
     }
 
@@ -129,6 +129,7 @@ public class Puzzle13 extends AbstractPuzzle {
         private ArrayNode() {
             this(new ArrayList<>());
         }
+
         @Override
         public String toString() {
             return elements.toString().replaceAll(" ", "");

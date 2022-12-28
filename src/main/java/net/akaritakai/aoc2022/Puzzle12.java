@@ -44,6 +44,9 @@ public class Puzzle12 extends AbstractPuzzle {
         return String.valueOf(min);
     }
 
+    private record Point(int x, int y) {
+    }
+
     private final class Maze {
         private final Graph<Point, DefaultWeightedEdge> graph;
         private final Set<Point> minPoints = new HashSet<>();
@@ -97,8 +100,5 @@ public class Puzzle12 extends AbstractPuzzle {
             this.start = start;
             this.end = end;
         }
-    }
-
-    private record Point(int x, int y) {
     }
 }

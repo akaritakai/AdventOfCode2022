@@ -15,27 +15,6 @@ public class Puzzle24 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
-    @Override
-    public int getDay() {
-        return 24;
-    }
-
-    @Override
-    public String solvePart1() {
-        var blizzards = new MazeState();
-        var goal = findPath(blizzards, new Vertex(0, -1, 0), blizzards.width - 1, blizzards.height);
-        return String.valueOf(goal.time);
-    }
-
-    @Override
-    public String solvePart2() {
-        var blizzards = new MazeState();
-        var goal = findPath(blizzards, new Vertex(0, -1, 0), blizzards.width - 1, blizzards.height);
-        goal = findPath(blizzards, goal, 0, -1);
-        goal = findPath(blizzards, goal, blizzards.width - 1, blizzards.height);
-        return String.valueOf(goal.time);
-    }
-
     private static Vertex findPath(MazeState blizzards, Vertex vertex, int endX, int endY) {
         var openSet = new PriorityQueue<Vertex>((v1, v2) -> {
             int score1 = v1.time + Math.abs(v1.x - endX) + Math.abs(v1.y - endY);
@@ -71,8 +50,33 @@ public class Puzzle24 extends AbstractPuzzle {
         throw new IllegalStateException("No path found");
     }
 
+    @Override
+    public int getDay() {
+        return 24;
+    }
 
-    /** Holds snapshot states for the Blizzards. Assumes they don't leave the maze. */
+    @Override
+    public String solvePart1() {
+        var blizzards = new MazeState();
+        var goal = findPath(blizzards, new Vertex(0, -1, 0), blizzards.width - 1, blizzards.height);
+        return String.valueOf(goal.time);
+    }
+
+    @Override
+    public String solvePart2() {
+        var blizzards = new MazeState();
+        var goal = findPath(blizzards, new Vertex(0, -1, 0), blizzards.width - 1, blizzards.height);
+        goal = findPath(blizzards, goal, 0, -1);
+        goal = findPath(blizzards, goal, blizzards.width - 1, blizzards.height);
+        return String.valueOf(goal.time);
+    }
+
+    private record Vertex(int x, int y, int time) {
+    }
+
+    /**
+     * Holds snapshot states for the Blizzards. Assumes they don't leave the maze.
+     */
     private final class MazeState {
         // A list of (x,dx) coordinates for blizzards moving left/right at a given y at the start
         private final int[][][] rowBlizzards;
@@ -127,8 +131,5 @@ public class Puzzle24 extends AbstractPuzzle {
             }
             return true;
         }
-    }
-
-    private record Vertex(int x, int y, int time) {
     }
 }

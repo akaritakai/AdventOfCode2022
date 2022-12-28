@@ -36,6 +36,9 @@ public class Puzzle20 extends AbstractPuzzle {
         return String.valueOf(nodes.decrypt());
     }
 
+    private record Node(int index, long value) {
+    }
+
     private final class Nodes {
         private final List<Long> values;
         private final List<Node> nodes = new ArrayList<>();
@@ -65,8 +68,5 @@ public class Puzzle20 extends AbstractPuzzle {
                     .map(i -> nodes.get((int) ((index + i) % values.size())).value)
                     .sum();
         }
-    }
-
-    private record Node(int index, long value) {
     }
 }

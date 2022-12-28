@@ -13,6 +13,18 @@ public class Puzzle10 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
+    private static boolean[][] draw(int[] values) {
+        boolean[][] display = new boolean[6][40];
+        for (var cycle = 0; cycle < 240; cycle++) {
+            var col = cycle % 40;
+            var row = cycle / 40;
+            if (Math.abs(col - values[cycle]) <= 1) {
+                display[row][col] = true;
+            }
+        }
+        return display;
+    }
+
     @Override
     public int getDay() {
         return 10;
@@ -41,22 +53,10 @@ public class Puzzle10 extends AbstractPuzzle {
         return LetterOcr.parse(image);
     }
 
-    private static boolean[][] draw(int[] values) {
-        boolean[][] display = new boolean[6][40];
-        for (var cycle = 0; cycle < 240; cycle++) {
-            var col = cycle % 40;
-            var row = cycle / 40;
-            if (Math.abs(col - values[cycle]) <= 1) {
-                display[row][col] = true;
-            }
-        }
-        return display;
-    }
-
     private static final class CPU {
+        private final int[] values = new int[240];
         private int cycle = 1;
         private int x = 1;
-        private final int[] values = new int[240];
 
         private void execute(String instruction) {
             if (cycle > 240) {

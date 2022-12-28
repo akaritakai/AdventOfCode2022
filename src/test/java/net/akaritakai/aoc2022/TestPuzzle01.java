@@ -11,16 +11,16 @@ public class TestPuzzle01 extends BasePuzzleTest {
                 1000
                 2000
                 3000
-                
+                                
                 4000
-                
+                                
                 5000
                 6000
-                
+                                
                 7000
                 8000
                 9000
-                
+                                
                 10000
                 """);
         assertEquals(puzzle.solvePart1(), "24000");
@@ -38,16 +38,16 @@ public class TestPuzzle01 extends BasePuzzleTest {
                 1000
                 2000
                 3000
-                
+                                
                 4000
-                
+                                
                 5000
                 6000
-                
+                                
                 7000
                 8000
                 9000
-                
+                                
                 10000
                 """);
         assertEquals(puzzle.solvePart2(), "45000");

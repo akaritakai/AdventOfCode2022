@@ -8,6 +8,7 @@ public abstract class AbstractPuzzle {
 
     /**
      * Constructor which accepts the puzzle input to be solved.
+     *
      * @param puzzleInput the puzzle input
      */
     public AbstractPuzzle(String puzzleInput) {
@@ -16,6 +17,7 @@ public abstract class AbstractPuzzle {
 
     /**
      * Gets the puzzle input for this day's puzzle.
+     *
      * @return the puzzle input for this day's puzzle
      */
     public String getPuzzleInput() {
@@ -24,18 +26,21 @@ public abstract class AbstractPuzzle {
 
     /**
      * The day number of the puzzle.
+     *
      * @return the day number of the puzzle
      */
     public abstract int getDay();
 
     /**
      * Returns the solution to part 1 of the puzzle.
+     *
      * @return the solution to part 1 of the puzzle
      */
     public abstract String solvePart1();
 
     /**
      * Returns the solution to part 2 of the puzzle.
+     *
      * @return the solution to part 2 of the puzzle
      */
     public abstract String solvePart2();

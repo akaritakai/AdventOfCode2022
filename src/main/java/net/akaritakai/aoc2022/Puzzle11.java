@@ -16,6 +16,17 @@ public class Puzzle11 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
+    private static long lcm(long a, long b) {
+        return (a * b) / gcd(a, b);
+    }
+
+    private static long gcd(long a, long b) {
+        if (a == 0) {
+            return b;
+        }
+        return gcd(b % a, a);
+    }
+
     @Override
     public int getDay() {
         return 11;
@@ -61,17 +72,6 @@ public class Puzzle11 extends AbstractPuzzle {
             lcm = lcm(lcm, Long.parseLong(matcher.group(1)));
         }
         return lcm;
-    }
-
-    private static long lcm(long a, long b) {
-        return (a * b) / gcd(a, b);
-    }
-
-    private static long gcd(long a, long b) {
-        if (a == 0) {
-            return b;
-        }
-        return gcd(b % a, a);
     }
 
     private static final class Monkey {

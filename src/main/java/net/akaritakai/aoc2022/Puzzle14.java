@@ -30,6 +30,9 @@ public class Puzzle14 extends AbstractPuzzle {
         return String.valueOf(cave.fill(true));
     }
 
+    private record Point(int x, int y) {
+    }
+
     private final class Cave {
         private final Set<Point> rock = new HashSet<>();
         private final Set<Point> sand = new HashSet<>();
@@ -104,8 +107,5 @@ public class Puzzle14 extends AbstractPuzzle {
             }
             return sand.size();
         }
-    }
-
-    private record Point(int x, int y) {
     }
 }
