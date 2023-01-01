@@ -11,15 +11,9 @@ public class Puzzle03 extends AbstractPuzzle {
     }
 
     private static long bitSet(String s) {
-        long set = 0;
-        for (char c : s.toCharArray()) {
-            if (c >= 'a' && c <= 'z') {
-                set |= 1L << (c - 'a');
-            } else if (c >= 'A' && c <= 'Z') {
-                set |= 1L << (c - 'A' + 26);
-            }
-        }
-        return set;
+        return s.chars()
+                .mapToLong(c -> 1L << (c >= 'a' ? c - 'a' : c - 'A' + 26))
+                .reduce(0, (a, b) -> a | b);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class Puzzle04 extends AbstractPuzzle {
     }
 
     private static boolean intersects(int[] ranges) {
-        return (ranges[0] <= ranges[2] && ranges[1] >= ranges[2]) || (ranges[2] <= ranges[0] && ranges[3] >= ranges[0]);
+        return ranges[1] >= ranges[2] && ranges[3] >= ranges[0];
     }
 
     @Override
