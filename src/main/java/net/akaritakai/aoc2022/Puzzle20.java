@@ -16,11 +16,6 @@ public class Puzzle20 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 20;
-    }
-
-    @Override
     public String solvePart1() {
         var nodes = new Nodes(1);
         nodes.mix();

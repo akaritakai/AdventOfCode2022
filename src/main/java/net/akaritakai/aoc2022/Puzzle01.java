@@ -13,11 +13,6 @@ public class Puzzle01 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 1;
-    }
-
-    @Override
     public String solvePart1() {
         var max = 0; // The most calories carried by an elf
         var it = parseInput();

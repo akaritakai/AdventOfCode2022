@@ -23,11 +23,6 @@ public class Puzzle21 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 21;
-    }
-
-    @Override
     public String solvePart1() {
         var equations = parseInput();
         Node root = buildAst(equations, equations.get("root"));

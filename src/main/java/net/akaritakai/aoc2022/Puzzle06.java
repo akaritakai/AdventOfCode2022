@@ -10,11 +10,6 @@ public class Puzzle06 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 6;
-    }
-
-    @Override
     public String solvePart1() {
         return String.valueOf(firstUniqueWindow(4));
     }

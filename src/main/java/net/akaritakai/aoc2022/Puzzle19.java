@@ -17,11 +17,6 @@ public class Puzzle19 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 19;
-    }
-
-    @Override
     public String solvePart1() {
         var sum = Arrays.stream(parseInput())
                 .map(blueprint -> new Mining(blueprint, 24))

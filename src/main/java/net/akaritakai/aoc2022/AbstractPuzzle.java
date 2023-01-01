@@ -25,13 +25,6 @@ public abstract class AbstractPuzzle {
     }
 
     /**
-     * The day number of the puzzle.
-     *
-     * @return the day number of the puzzle
-     */
-    public abstract int getDay();
-
-    /**
      * Returns the solution to part 1 of the puzzle.
      *
      * @return the solution to part 1 of the puzzle

@@ -23,11 +23,6 @@ public class Puzzle04 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 4;
-    }
-
-    @Override
     public String solvePart1() {
         var count = Arrays.stream(parseInput()).filter(Puzzle04::fullyContains).count();
         return String.valueOf(count);

@@ -14,11 +14,6 @@ public class Puzzle09 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 9;
-    }
-
-    @Override
     public String solvePart1() {
         var rope = new Rope(2);
         for (var line : getPuzzleInput().split("\n")) {

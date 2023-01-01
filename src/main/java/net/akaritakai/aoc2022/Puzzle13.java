@@ -74,11 +74,6 @@ public class Puzzle13 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 13;
-    }
-
-    @Override
     public String solvePart1() {
         var sum = 0;
         var pairs = parseInput();

@@ -17,11 +17,6 @@ public class Puzzle03 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 3;
-    }
-
-    @Override
     public String solvePart1() {
         var sum = getPuzzleInput().lines()
                 .mapToInt(rucksack -> {

@@ -12,11 +12,6 @@ public class Puzzle23 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 23;
-    }
-
-    @Override
     public String solvePart1() {
         var elves = parseInput();
         for (var i = 0; i < 10; i++) {

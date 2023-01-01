@@ -10,11 +10,6 @@ public class Puzzle02 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 2;
-    }
-
-    @Override
     public String solvePart1() {
         var score = getPuzzleInput().lines()
                 .mapToInt(line -> {

@@ -13,11 +13,6 @@ public class Puzzle07 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 7;
-    }
-
-    @Override
     public String solvePart1() {
         var totalSize = new Input().directorySizes().filter(size -> size <= 100_000).sum();
         return String.valueOf(totalSize);

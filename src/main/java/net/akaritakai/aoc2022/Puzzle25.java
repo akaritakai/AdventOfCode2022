@@ -39,11 +39,6 @@ public class Puzzle25 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 25;
-    }
-
-    @Override
     public String solvePart1() {
         long sum = getPuzzleInput().lines().mapToLong(Puzzle25::fromSnafu).sum();
         return toSnafu(sum);

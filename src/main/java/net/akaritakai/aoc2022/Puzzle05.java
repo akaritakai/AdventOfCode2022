@@ -23,11 +23,6 @@ public class Puzzle05 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 5;
-    }
-
-    @Override
     public String solvePart1() {
         var stacks = parseStacks();
         parseInstructions().forEach(instruction -> {

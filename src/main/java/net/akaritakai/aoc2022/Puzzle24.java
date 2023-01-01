@@ -51,11 +51,6 @@ public class Puzzle24 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 24;
-    }
-
-    @Override
     public String solvePart1() {
         var blizzards = new MazeState();
         var goal = findPath(blizzards, new Vertex(0, -1, 0), blizzards.width - 1, blizzards.height);

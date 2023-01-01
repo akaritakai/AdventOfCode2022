@@ -26,11 +26,6 @@ public class Puzzle10 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 10;
-    }
-
-    @Override
     public String solvePart1() {
         var cpu = new CPU();
         for (var line : getPuzzleInput().split("\n")) {

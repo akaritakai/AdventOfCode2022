@@ -19,11 +19,6 @@ public class Puzzle12 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 12;
-    }
-
-    @Override
     public String solvePart1() {
         var maze = new Maze();
         var alg = new BidirectionalDijkstraShortestPath<>(maze.graph);

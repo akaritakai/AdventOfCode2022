@@ -35,11 +35,6 @@ public class Puzzle22 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 22;
-    }
-
-    @Override
     public String solvePart1() {
         char[][] grid = parseGrid();
         var numRows = grid.length;

@@ -15,11 +15,6 @@ public class Puzzle17 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 17;
-    }
-
-    @Override
     public String solvePart1() {
         var tetris = new Tetris();
         for (var i = 0; i < 2022; i++) {

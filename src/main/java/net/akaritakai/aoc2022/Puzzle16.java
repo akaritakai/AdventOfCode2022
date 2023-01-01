@@ -24,11 +24,6 @@ public class Puzzle16 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 16;
-    }
-
-    @Override
     public String solvePart1() {
         var valves = new Valves(30);
         var memo = valves.calculateFlow();

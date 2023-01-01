@@ -18,11 +18,6 @@ public class Puzzle18 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 18;
-    }
-
-    @Override
     public String solvePart1() {
         var cubes = parseInput();
         var area = cubes.stream()

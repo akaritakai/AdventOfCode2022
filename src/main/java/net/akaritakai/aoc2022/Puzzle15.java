@@ -41,11 +41,6 @@ public class Puzzle15 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 15;
-    }
-
-    @Override
     public String solvePart1() {
         var tunnels = new Tunnels(getPuzzleInput());
         return String.valueOf(tunnels.nonBeaconsOnRow(2_000_000));

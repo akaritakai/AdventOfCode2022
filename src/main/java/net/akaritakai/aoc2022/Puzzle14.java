@@ -14,11 +14,6 @@ public class Puzzle14 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 14;
-    }
-
-    @Override
     public String solvePart1() {
         var cave = new Cave();
         return String.valueOf(cave.fill(false));

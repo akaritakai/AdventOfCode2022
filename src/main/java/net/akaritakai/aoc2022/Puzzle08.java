@@ -14,11 +14,6 @@ public class Puzzle08 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 8;
-    }
-
-    @Override
     public String solvePart1() {
         var grid = parseInput();
         var numRows = grid.length;

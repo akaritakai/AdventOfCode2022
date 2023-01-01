@@ -28,11 +28,6 @@ public class Puzzle11 extends AbstractPuzzle {
     }
 
     @Override
-    public int getDay() {
-        return 11;
-    }
-
-    @Override
     public String solvePart1() {
         var monkeys = parseInput(null);
         for (var i = 0; i < 20; i++) {
