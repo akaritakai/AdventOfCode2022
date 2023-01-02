@@ -1,6 +1,10 @@
 package net.akaritakai.aoc2022;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -12,30 +16,89 @@ public class Puzzle07 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
+    private static IntStream directorySizes(Node root) {
+        var stack = new Stack<Node>();
+        stack.push(root);
+        var sizes = new ArrayList<Integer>();
+        while (!stack.isEmpty()) {
+            var node = stack.pop();
+            if (node.isDirectory) {
+                sizes.add(node.size);
+                stack.addAll(node.children.values());
+            }
+        }
+        return sizes.stream().mapToInt(Integer::intValue);
+    }
+
+    private static Node parseCommand(Node root, Node current, String command) {
+        if (command.startsWith("$ cd ")) {
+            var matcher = Pattern.compile("\\$ cd (\\S+).*").matcher(command);
+            if (!matcher.find()) {
+                throw new IllegalArgumentException("Invalid command: " + command);
+            }
+            var path = matcher.group(1);
+            return switch (path) {
+                case "/" -> root;
+                case ".." -> current.parent;
+                default -> current.children.computeIfAbsent(path, k -> new Node(current));
+            };
+        } else if (command.startsWith("$ ls")) {
+            command.lines().skip(1).forEach(response -> {
+                if (response.startsWith("dir ")) {
+                    var path = response.substring(4);
+                    current.children.computeIfAbsent(path, k -> new Node(current));
+                } else {
+                    var parts = response.split(" ");
+                    var size = Integer.parseInt(parts[0]);
+                    var path = parts[1];
+                    if (!current.children.containsKey(path)) {
+                        current.children.put(path, new Node(current, size));
+                        var parent = current;
+                        while (parent != null) {
+                            parent.size += size;
+                            parent = parent.parent;
+                        }
+                    }
+                }
+            });
+        }
+        return current;
+    }
+
     @Override
     public String solvePart1() {
-        var totalSize = new Input().directorySizes().filter(size -> size <= 100_000).sum();
+        var totalSize = directorySizes(buildFileTree()).filter(size -> size <= 100_000).sum();
         return String.valueOf(totalSize);
     }
 
     @Override
     public String solvePart2() {
-        var input = new Input();
+        var root = buildFileTree();
 
         var totalSpace = 70_000_000;
-        var usedSpace = input.rootSize();
+        var usedSpace = root.size;
         var freeSpace = totalSpace - usedSpace;
         var spaceNeeded = 30_000_000 - freeSpace;
 
-        var dirSize = input.directorySizes().filter(size -> size >= spaceNeeded).min().orElseThrow();
+        var dirSize = directorySizes(root).filter(size -> size >= spaceNeeded).min().orElseThrow();
         return String.valueOf(dirSize);
+    }
+
+    private Node buildFileTree() {
+        var root = new Node(null);
+        var matcher = Pattern.compile("\\$[^$]+").matcher(getPuzzleInput());
+        var current = root;
+        while (matcher.find()) {
+            current = parseCommand(root, current, matcher.group());
+        }
+        return root;
     }
 
     private static final class Node {
         private final Node parent;
         private final Map<String, Node> children = new HashMap<>();
         private final boolean isDirectory;
-        private final int size;
+        private int size;
 
         private Node(Node parent) {
             this.parent = parent;
@@ -47,77 +110,6 @@ public class Puzzle07 extends AbstractPuzzle {
             this.parent = parent;
             this.isDirectory = false;
             this.size = size;
-        }
-    }
-
-    /**
-     * Builds the file system metadata state from the queries and responses.
-     */
-    private final class Input {
-        private final Node root = new Node(null);
-        private final Map<Node, Integer> recursiveSizes = new HashMap<>();
-
-        private Input() {
-            var current = root;
-            Scanner scanner = new Scanner(getPuzzleInput());
-            var buffer = new ArrayList<String>();
-            while (scanner.hasNextLine()) {
-                var line = scanner.nextLine();
-                if (!buffer.isEmpty() && line.startsWith("$")) {
-                    current = processBuffer(buffer, current);
-                    buffer.clear();
-                }
-                buffer.add(line);
-            }
-            processBuffer(buffer, current);
-        }
-
-        private Node processBuffer(List<String> buffer, Node current) {
-            var command = buffer.get(0);
-            if (command.startsWith("$ cd ")) {
-                var path = command.substring(5);
-                return switch (path) {
-                    case "/" -> root;
-                    case ".." -> current.parent;
-                    default -> current.children.computeIfAbsent(path, k -> new Node(current));
-                };
-            } else if (command.equals("$ ls")) {
-                buffer.stream().skip(1).forEach(response -> {
-                    if (response.startsWith("dir ")) {
-                        var path = response.substring(4);
-                        current.children.computeIfAbsent(path, k -> new Node(current));
-                    } else {
-                        var parts = response.split(" ");
-                        var size = Integer.parseInt(parts[0]);
-                        var path = parts[1];
-                        current.children.computeIfAbsent(path, k -> new Node(current, size));
-                    }
-                });
-            }
-            return current;
-        }
-
-        private int recursiveSize(Node node) {
-            if (!node.isDirectory) {
-                return node.size;
-            }
-            if (recursiveSizes.containsKey(node)) {
-                return recursiveSizes.get(node);
-            }
-            var size = node.children.values().stream().mapToInt(this::recursiveSize).sum();
-            recursiveSizes.put(node, size);
-            return size;
-        }
-
-        private int rootSize() {
-            return recursiveSize(root);
-        }
-
-        private IntStream directorySizes() {
-            if (recursiveSizes.isEmpty()) {
-                recursiveSize(root);
-            }
-            return recursiveSizes.values().stream().mapToInt(i -> i);
         }
     }
 }
