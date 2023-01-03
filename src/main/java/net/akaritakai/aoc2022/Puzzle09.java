@@ -8,7 +8,6 @@ import java.util.Set;
  * the rope ahead of it.
  */
 public class Puzzle09 extends AbstractPuzzle {
-
     public Puzzle09(String puzzleInput) {
         super(puzzleInput);
     }

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
  * In Day 5, we are manipulating a number of stacks and querying their final state.
  */
 public class Puzzle05 extends AbstractPuzzle {
-
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^move (\\d+) from (\\d+) to (\\d+)$");
 
     public Puzzle05(String puzzleInput) {

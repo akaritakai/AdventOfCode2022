@@ -8,7 +8,6 @@ import java.util.List;
  * In Day 10, we're emulating a processor that drives a CRT display and then reading the display via OCR.
  */
 public class Puzzle10 extends AbstractPuzzle {
-
     public Puzzle10(String puzzleInput) {
         super(puzzleInput);
     }
@@ -18,9 +17,7 @@ public class Puzzle10 extends AbstractPuzzle {
         for (var cycle = 0; cycle < 240; cycle++) {
             var col = cycle % 40;
             var row = cycle / 40;
-            if (Math.abs(col - values[cycle]) <= 1) {
-                display[row][col] = true;
-            }
+            display[row][col] = Math.abs(col - values[cycle]) <= 1;
         }
         return display;
     }
@@ -66,5 +63,4 @@ public class Puzzle10 extends AbstractPuzzle {
             }
         }
     }
-
 }

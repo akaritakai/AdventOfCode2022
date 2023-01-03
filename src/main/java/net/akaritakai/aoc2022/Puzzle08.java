@@ -8,7 +8,6 @@ import java.util.Stack;
  * within the forest by processing the visibility directions using a monotonic stack in O(m*n).
  */
 public class Puzzle08 extends AbstractPuzzle {
-
     public Puzzle08(String puzzleInput) {
         super(puzzleInput);
     }
