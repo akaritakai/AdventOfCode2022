@@ -30,11 +30,12 @@ public class Puzzle07 extends AbstractPuzzle {
         return sizes.stream().mapToInt(Integer::intValue);
     }
 
-    private static Node parseCommand(Node root, Node current, String command) {
-        if (command.startsWith("$ cd ")) {
-            var matcher = Pattern.compile("\\$ cd (\\S+).*").matcher(command);
+    private static Node parseQueryAndAnswer(Node root, Node current, String queryAndAnswer) {
+        var query = queryAndAnswer.lines().findFirst().orElseThrow();
+        if (query.startsWith("$ cd ")) {
+            var matcher = Pattern.compile("\\$ cd (\\S+).*").matcher(query);
             if (!matcher.find()) {
-                throw new IllegalArgumentException("Invalid command: " + command);
+                throw new IllegalArgumentException("Invalid query: " + query);
             }
             var path = matcher.group(1);
             return switch (path) {
@@ -42,13 +43,14 @@ public class Puzzle07 extends AbstractPuzzle {
                 case ".." -> current.parent;
                 default -> current.children.computeIfAbsent(path, k -> new Node(current));
             };
-        } else if (command.startsWith("$ ls")) {
-            command.lines().skip(1).forEach(response -> {
-                if (response.startsWith("dir ")) {
-                    var path = response.substring(4);
+        } else if (query.startsWith("$ ls")) {
+            var answer = queryAndAnswer.lines().skip(1);
+            answer.forEach(line -> {
+                if (line.startsWith("dir ")) {
+                    var path = line.substring(4);
                     current.children.computeIfAbsent(path, k -> new Node(current));
                 } else {
-                    var parts = response.split(" ");
+                    var parts = line.split(" ");
                     var size = Integer.parseInt(parts[0]);
                     var path = parts[1];
                     if (!current.children.containsKey(path)) {
@@ -89,7 +91,7 @@ public class Puzzle07 extends AbstractPuzzle {
         var matcher = Pattern.compile("\\$[^$]+").matcher(getPuzzleInput());
         var current = root;
         while (matcher.find()) {
-            current = parseCommand(root, current, matcher.group());
+            current = parseQueryAndAnswer(root, current, matcher.group());
         }
         return root;
     }
