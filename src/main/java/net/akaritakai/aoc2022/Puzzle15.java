@@ -1,10 +1,10 @@
 package net.akaritakai.aoc2022;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.microsoft.z3.ArithExpr;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import org.jetbrains.annotations.NotNull;
-import org.jheaps.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.List;
