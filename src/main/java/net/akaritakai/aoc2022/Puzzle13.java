@@ -16,22 +16,23 @@ public class Puzzle13 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
-    private static Comparator<Node> comparator() {
-        return (first, second) -> {
+    private static Comparator<Node> NODE_COMPARATOR = null;
+    static {
+        NODE_COMPARATOR = (first, second) -> {
             if (first instanceof ValueNode left && second instanceof ValueNode right) {
                 return Integer.compare(left.element, right.element);
             } else if (first instanceof ArrayNode left && second instanceof ArrayNode right) {
                 for (int i = 0; i < Math.min(left.elements.size(), right.elements.size()); i++) {
-                    var result = comparator().compare(left.elements.get(i), right.elements.get(i));
+                    var result = NODE_COMPARATOR.compare(left.elements.get(i), right.elements.get(i));
                     if (result != 0) {
                         return result;
                     }
                 }
                 return Integer.compare(left.elements.size(), right.elements.size());
             } else if (first instanceof ValueNode left && second instanceof ArrayNode right) {
-                return comparator().compare(new ArrayNode(List.of(left)), right);
+                return NODE_COMPARATOR.compare(new ArrayNode(List.of(left)), right);
             } else if (first instanceof ArrayNode left && second instanceof ValueNode right) {
-                return comparator().compare(left, new ArrayNode(List.of(right)));
+                return NODE_COMPARATOR.compare(left, new ArrayNode(List.of(right)));
             }
             throw new IllegalArgumentException("Invalid nodes: " + first + ", " + second);
         };
@@ -79,7 +80,7 @@ public class Puzzle13 extends AbstractPuzzle {
         var pairs = parseInput();
         for (var i = 0; i < pairs.size(); i++) {
             var pair = pairs.get(i);
-            if (comparator().compare(pair.getLeft(), pair.getRight()) <= 0) {
+            if (NODE_COMPARATOR.compare(pair.getLeft(), pair.getRight()) <= 0) {
                 sum += i + 1;
             }
         }
@@ -88,15 +89,14 @@ public class Puzzle13 extends AbstractPuzzle {
 
     @Override
     public String solvePart2() {
-        var pairs = parseInput();
-        var packets = pairs.stream()
+        var packets = parseInput().stream()
                 .flatMap(pair -> Stream.of(pair.getLeft(), pair.getRight()))
                 .collect(Collectors.toCollection(ArrayList::new));
         var divider1 = parsePacket("[[2]]");
         var divider2 = parsePacket("[[6]]");
         packets.add(divider1);
         packets.add(divider2);
-        packets.sort(comparator());
+        packets.sort(NODE_COMPARATOR);
         var key = 1;
         for (var i = 0; i < packets.size(); i++) {
             if (packets.get(i) == divider1 || packets.get(i) == divider2) {
@@ -124,17 +124,8 @@ public class Puzzle13 extends AbstractPuzzle {
         private ArrayNode() {
             this(new ArrayList<>());
         }
-
-        @Override
-        public String toString() {
-            return elements.toString().replaceAll(" ", "");
-        }
     }
 
     private record ValueNode(int element) implements Node {
-        @Override
-        public String toString() {
-            return String.valueOf(element);
-        }
     }
 }
