@@ -1,9 +1,8 @@
 package net.akaritakai.aoc2022;
 
+import com.google.common.primitives.Longs;
+
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 /**
@@ -29,10 +28,10 @@ public class Puzzle11 extends AbstractPuzzle {
 
     @Override
     public String solvePart1() {
-        var monkeys = parseInput(null);
+        var monkeys = parseInput();
         for (var i = 0; i < 20; i++) {
             for (var monkey : monkeys) {
-                monkey.doRound();
+                monkey.doRound(monkeys, null);
             }
         }
         Arrays.sort(monkeys, (a, b) -> Long.compare(b.inspections, a.inspections));
@@ -41,32 +40,29 @@ public class Puzzle11 extends AbstractPuzzle {
 
     @Override
     public String solvePart2() {
-        var monkeys = parseInput(lcm());
+        var monkeys = parseInput();
+        // Calculate the LCM
+        var lcm = 1L;
+        var matcher = Pattern.compile("divisible by (\\d+)").matcher(getPuzzleInput());
+        while (matcher.find()) {
+            lcm = lcm(lcm, Long.parseLong(matcher.group(1)));
+        }
         for (var i = 0; i < 10_000; i++) {
             for (var monkey : monkeys) {
-                monkey.doRound();
+                monkey.doRound(monkeys, lcm);
             }
         }
         Arrays.sort(monkeys, (a, b) -> Long.compare(b.inspections, a.inspections));
         return String.valueOf(monkeys[0].inspections * monkeys[1].inspections);
     }
 
-    private Monkey[] parseInput(Long lcm) {
+    private Monkey[] parseInput() {
         var blocks = getPuzzleInput().split("\n\n");
         var monkeys = new Monkey[blocks.length];
         for (var i = 0; i < blocks.length; i++) {
-            monkeys[i] = new Monkey(monkeys, blocks[i], lcm);
+            monkeys[i] = new Monkey(blocks[i]);
         }
         return monkeys;
-    }
-
-    private long lcm() {
-        var lcm = 1L;
-        var matcher = Pattern.compile("divisible by (\\d+)").matcher(getPuzzleInput());
-        while (matcher.find()) {
-            lcm = lcm(lcm, Long.parseLong(matcher.group(1)));
-        }
-        return lcm;
     }
 
     private static final class Monkey {
@@ -78,50 +74,86 @@ public class Puzzle11 extends AbstractPuzzle {
                 \\s+If true: throw to monkey (\\S+)
                 \\s+If false: throw to monkey (\\S+)""");
 
-        private final LinkedList<Long> items = new LinkedList<>();
-        private final Consumer<Long> function;
+        private final ItemList items = new ItemList();
+        private final char operation;
+        private final Long operand;
+        private final long divisor;
+        private final int trueMonkey;
+        private final int falseMonkey;
         private long inspections = 0;
 
-        private Monkey(Monkey[] monkeys, String block, Long lcm) {
+        private Monkey(String block) {
             var matcher = PATTERN.matcher(block);
             if (!matcher.find()) {
                 throw new IllegalArgumentException("Invalid monkey block: " + block);
             }
             for (var item : matcher.group(1).split(", ")) {
-                items.add(Long.parseLong(item));
+                items.addLast(Long.parseLong(item));
             }
-            var operation = matcher.group(2).charAt(0);
-
-            UnaryOperator<Long> operand = switch (matcher.group(3)) {
-                case "old" -> i -> i;
-                default -> i -> Long.parseLong(matcher.group(3));
-            };
-            var divisor = Long.parseLong(matcher.group(4));
-            var trueMonkey = Integer.parseInt(matcher.group(5));
-            var falseMonkey = Integer.parseInt(matcher.group(6));
-            function = i -> {
-                switch (operation) {
-                    case '+' -> i += operand.apply(i);
-                    case '*' -> i *= operand.apply(i);
-                }
-                if (lcm != null) {
-                    i %= lcm;
-                } else {
-                    i /= 3;
-                }
-                if (i % divisor == 0) {
-                    monkeys[trueMonkey].items.addLast(i);
-                } else {
-                    monkeys[falseMonkey].items.addLast(i);
-                }
-            };
+            this.operation = matcher.group(2).charAt(0);
+            this.operand = Longs.tryParse(matcher.group(3));
+            this.divisor = Long.parseLong(matcher.group(4));
+            this.trueMonkey = Integer.parseInt(matcher.group(5));
+            this.falseMonkey = Integer.parseInt(matcher.group(6));
         }
 
-        private void doRound() {
+        private void doRound(Monkey[] monkeys, Long lcm) {
             while (!items.isEmpty()) {
-                function.accept(items.removeFirst());
+                var item = items.removeFirst();
+                var operand = item;
+                if (this.operand != null) {
+                    operand = this.operand;
+                }
+                switch (operation) {
+                    case '+' -> item += operand;
+                    case '*' -> item *= operand;
+                }
+                if (lcm == null) {
+                    item /= 3;
+                } else {
+                    item %= lcm;
+                }
+                if (item % divisor == 0) {
+                    monkeys[trueMonkey].items.addLast(item);
+                } else {
+                    monkeys[falseMonkey].items.addLast(item);
+                }
                 inspections++;
             }
+        }
+    }
+
+    /**
+     * An item list that can hold up to 100 items.
+     */
+    private static final class ItemList {
+        private static final int CAPACITY = 100;
+        private final long[] items = new long[CAPACITY];
+        private int size = 0;
+        private int head = 0;
+        private int tail = 0;
+
+        private boolean isEmpty() {
+            return size == 0;
+        }
+
+        private void addLast(long item) {
+            if (size == CAPACITY) {
+                throw new IllegalStateException("Item list is full");
+            }
+            items[tail % CAPACITY] = item;
+            tail++;
+            size++;
+        }
+
+        private long removeFirst() {
+            if (size == 0) {
+                throw new IllegalStateException("Item list is empty");
+            }
+            var item = items[head % CAPACITY];
+            head++;
+            size--;
+            return item;
         }
     }
 }
