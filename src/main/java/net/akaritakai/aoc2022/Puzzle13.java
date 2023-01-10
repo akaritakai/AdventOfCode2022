@@ -12,11 +12,8 @@ import java.util.stream.Stream;
  */
 public class Puzzle13 extends AbstractPuzzle {
 
-    public Puzzle13(String puzzleInput) {
-        super(puzzleInput);
-    }
-
     private static Comparator<Node> NODE_COMPARATOR = null;
+
     static {
         NODE_COMPARATOR = (first, second) -> {
             if (first instanceof ValueNode left && second instanceof ValueNode right) {
@@ -36,6 +33,10 @@ public class Puzzle13 extends AbstractPuzzle {
             }
             throw new IllegalArgumentException("Invalid nodes: " + first + ", " + second);
         };
+    }
+
+    public Puzzle13(String puzzleInput) {
+        super(puzzleInput);
     }
 
     private static Node parsePacket(String packet) {

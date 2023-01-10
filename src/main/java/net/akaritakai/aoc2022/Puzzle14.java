@@ -1,7 +1,6 @@
 package net.akaritakai.aoc2022;
 
 import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -13,94 +12,100 @@ public class Puzzle14 extends AbstractPuzzle {
         super(puzzleInput);
     }
 
+    private static int fill(boolean[][] cave, boolean useFloor) {
+        var sand = 0;
+        var floor = cave.length - 1;
+        var startCol = cave[0].length / 2;
+        var filled = false;
+        while (!filled) {
+            var row = 0;
+            var col = startCol;
+            while (true) {
+                if (row == floor) {
+                    filled = !useFloor;
+                    if (useFloor) {
+                        cave[row][col] = true;
+                        sand++;
+                    }
+                    break;
+                }
+                if (!cave[row + 1][col]) { // Down
+                    row++;
+                    continue;
+                }
+                if (!cave[row + 1][col - 1]) { // Down left
+                    row++;
+                    col--;
+                    continue;
+                }
+                if (!cave[row + 1][col + 1]) { // Down right
+                    row++;
+                    col++;
+                    continue;
+                }
+                if (row == 0 && col == startCol) {
+                    filled = true;
+                }
+                cave[row][col] = true;
+                sand++;
+                break;
+            }
+        }
+        return sand;
+    }
+
     @Override
     public String solvePart1() {
-        var cave = new Cave();
-        return String.valueOf(cave.fill(false));
+        return String.valueOf(fill(makeCave(), false));
     }
 
     @Override
     public String solvePart2() {
-        var cave = new Cave();
-        return String.valueOf(cave.fill(true));
+        return String.valueOf(fill(makeCave(), true));
     }
 
-    private record Point(int x, int y) {
-    }
-
-    private final class Cave {
-        private final Set<Point> rock = new HashSet<>();
-        private final Set<Point> sand = new HashSet<>();
-        private final int floor;
-
-        private Cave() {
-            var pattern = Pattern.compile("(\\d+),(\\d+)");
-            for (var line : getPuzzleInput().split("\n")) {
-                var matcher = pattern.matcher(line);
-                Point point = null;
-                while (matcher.find()) {
-                    var x = Integer.parseInt(matcher.group(1));
-                    var y = Integer.parseInt(matcher.group(2));
-                    if (point == null) {
-                        point = new Point(x, y);
-                        rock.add(point);
+    private boolean[][] makeCave() {
+        // Find all the rocks in the cave
+        var rocks = new HashSet<Point>();
+        var pattern = Pattern.compile("(\\d+),(\\d+)");
+        for (var line : getPuzzleInput().split("\n")) {
+            var matcher = pattern.matcher(line);
+            Point point = null;
+            while (matcher.find()) {
+                var col = Integer.parseInt(matcher.group(1));
+                var row = Integer.parseInt(matcher.group(2));
+                if (point == null) {
+                    point = new Point(row, col);
+                    rocks.add(point);
+                } else {
+                    var next = new Point(row, col);
+                    if (point.col == next.col) {
+                        var min = Math.min(point.row, next.row);
+                        var max = Math.max(point.row, next.row);
+                        for (var i = min; i <= max; i++) {
+                            rocks.add(new Point(i, point.col));
+                        }
                     } else {
-                        var next = new Point(x, y);
-                        if (point.x == next.x) {
-                            var min = Math.min(point.y, next.y);
-                            var max = Math.max(point.y, next.y);
-                            for (var i = min; i <= max; i++) {
-                                rock.add(new Point(point.x, i));
-                            }
-                        } else {
-                            var min = Math.min(point.x, next.x);
-                            var max = Math.max(point.x, next.x);
-                            for (var i = min; i <= max; i++) {
-                                rock.add(new Point(i, point.y));
-                            }
+                        var min = Math.min(point.col, next.col);
+                        var max = Math.max(point.col, next.col);
+                        for (var i = min; i <= max; i++) {
+                            rocks.add(new Point(point.row, i));
                         }
-                        point = next;
                     }
+                    point = next;
                 }
             }
-            floor = rock.stream().mapToInt(p -> p.y).max().orElseThrow() + 1;
         }
+        // Build the cave
+        var height = rocks.stream().mapToInt(p -> p.row).max().orElseThrow() + 2;
+        var width = 2 * height + 1;
+        var cave = new boolean[height][width];
+        for (var rock : rocks) {
+            cave[rock.row][rock.col - 500 + (width / 2)] = true;
+        }
+        return cave;
+    }
 
-        private int fill(boolean useFloor) {
-            var filled = false;
-            while (!filled) {
-                var point = new Point(500, 0);
-                while (true) {
-                    if (point.y == floor) {
-                        filled = !useFloor;
-                        if (useFloor) {
-                            sand.add(point);
-                        }
-                        break;
-                    }
-                    var down = new Point(point.x, point.y + 1);
-                    if (!rock.contains(down) && !sand.contains(down)) {
-                        point = down;
-                        continue;
-                    }
-                    var downLeft = new Point(point.x - 1, point.y + 1);
-                    if (!rock.contains(downLeft) && !sand.contains(downLeft)) {
-                        point = downLeft;
-                        continue;
-                    }
-                    var downRight = new Point(point.x + 1, point.y + 1);
-                    if (!rock.contains(downRight) && !sand.contains(downRight)) {
-                        point = downRight;
-                        continue;
-                    }
-                    if (point.x == 500 && point.y == 0) {
-                        filled = true;
-                    }
-                    sand.add(point);
-                    break;
-                }
-            }
-            return sand.size();
-        }
+    private record Point(int row, int col) {
     }
 }
