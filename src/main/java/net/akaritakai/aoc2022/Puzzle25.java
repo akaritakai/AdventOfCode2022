@@ -25,11 +25,9 @@ public class Puzzle25 extends AbstractPuzzle {
 
     @VisibleForTesting
     static long fromSnafu(String snafu) {
-        long n = 0;
-        for (var c : snafu.toCharArray()) {
-            n = (5 * n) + Chars.indexOf(DIGITS, c) - 2;
-        }
-        return n;
+        return snafu.chars()
+                .mapToLong(c -> Chars.indexOf(DIGITS, (char) c) - 2)
+                .reduce(0, (a, b) -> 5 * a + b);
     }
 
     @Override
