@@ -1,9 +1,9 @@
 package net.akaritakai.aoc2022;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.microsoft.z3.ArithExpr;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
+import com.microsoft.z3.IntExpr;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,22 +18,19 @@ import java.util.regex.Pattern;
  * a series of integer SAT constraints.
  */
 public class Puzzle15 extends AbstractPuzzle {
-
     public Puzzle15(String puzzleInput) {
         super(puzzleInput);
     }
 
-    @SuppressWarnings("rawtypes")
-    private static ArithExpr mkDist(Context context, ArithExpr x1, ArithExpr y1, ArithExpr x2, ArithExpr y2) {
-        var dx = mkAbs(context, context.mkSub(x1, x2));
-        var dy = mkAbs(context, context.mkSub(y1, y2));
-        return context.mkAdd(dx, dy);
+    private static IntExpr mkDist(Context context, IntExpr x1, IntExpr y1, IntExpr x2, IntExpr y2) {
+        var dx = mkAbs(context, (IntExpr) context.mkSub(x1, x2));
+        var dy = mkAbs(context, (IntExpr) context.mkSub(y1, y2));
+        return (IntExpr) context.mkAdd(dx, dy);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static ArithExpr mkAbs(Context context, ArithExpr expr) {
+    private static IntExpr mkAbs(Context context, IntExpr expr) {
         var zero = context.mkInt(0);
-        return (ArithExpr) context.mkITE(context.mkGe(expr, zero), expr, context.mkSub(zero, expr));
+        return (IntExpr) context.mkITE(context.mkGe(expr, zero), expr, context.mkSub(zero, expr));
     }
 
     private static int distance(Point a, Point b) {
@@ -113,7 +110,6 @@ public class Puzzle15 extends AbstractPuzzle {
             return ranges.stream().mapToInt(range -> range.end - range.start + 1).sum();
         }
 
-        @SuppressWarnings("unchecked")
         long findFrequency(int maxValue) {
             try (var context = new Context()) {
                 var solver = context.mkSolver();
@@ -139,8 +135,8 @@ public class Puzzle15 extends AbstractPuzzle {
 
                 // (x, y) has to be surrounded by excluded points.
                 for (var d : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
-                    var x1 = context.mkAdd(x, context.mkInt(d[0]));
-                    var y1 = context.mkAdd(y, context.mkInt(d[1]));
+                    var x1 = (IntExpr) context.mkAdd(x, context.mkInt(d[0]));
+                    var y1 = (IntExpr) context.mkAdd(y, context.mkInt(d[1]));
                     var elements = pairs.stream()
                             .map(pair -> {
                                 var distance1 = mkDist(context,
